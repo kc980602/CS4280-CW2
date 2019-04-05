@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var controllerUser = require('../controllers/user')
 
-router.get('/', controllerUser.info());
+// router.get('/', controllerUser.info());
 
 
 
