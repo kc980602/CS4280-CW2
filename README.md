@@ -63,10 +63,11 @@ CREATE TABLE `user` (
 	`password` VARCHAR(200) NOT NULL,
 	`point`  INT DEFAULT '0',
 	`role` VARCHAR(10) DEFAULT '',
-	`status` INT(3) DEFAULT '0',
-	`created` TIMESTAMP NOT NULL,
+	`status` INT(3) DEFAULT 0,
+	`created` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
+ALTER TABLE `user` ADD UNIQUE(username);
 
 DROP TABLE IF EXISTS `album`;
 CREATE TABLE `album` (
@@ -75,8 +76,8 @@ CREATE TABLE `album` (
 	`artist` VARCHAR(100) NOT NULL,
 	`label` VARCHAR(100) DEFAULT '',
 	`release_date` DATE NOT NULL,
-	`status` INT(3) DEFAULT '0',
-	`created` TIMESTAMP NOT NULL,
+	`status` INT(3) DEFAULT 0,
+	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
 
@@ -91,8 +92,8 @@ CREATE TABLE `track` (
 	`quantity` INT(6) NOT NULL,
 	`file` VARCHAR(200) NOT NULL,
 	`file_preview` VARCHAR(200) NOT NULL,
-	`status` INT(3) DEFAULT '0',
-	`created` TIMESTAMP NOT NULL,
+	`status` INT(3) DEFAULT 0,
+	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
 ALTER TABLE `track`
@@ -104,7 +105,7 @@ CREATE TABLE `cart` (
 	`user_id` INT(10) NOT NULL,
 	`album_id` INT(10) NOT NULL,
 	`track_id` INT(10) NOT NULL,
-	`created` TIMESTAMP NOT NULL,
+	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
 ALTER TABLE `cart`
@@ -116,8 +117,8 @@ DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`user_id` INT(10) NOT NULL,
-	`status` INT(3) DEFAULT '0',
-	`created` TIMESTAMP NOT NULL,
+	`status` INT(3) DEFAULT 0,
+	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
 ALTER TABLE `order`
@@ -130,11 +131,11 @@ CREATE TABLE `order_item` (
 	`album_id` INT(10) NOT NULL,
 	`track_id` INT(10) NOT NULL,
 	`price` INT(6) NOT NULL,
-	`refundable` BOOLEAN  DEFAULT 1
-	`status` INT(3) DEFAULT '0',
+	`refundable` BOOLEAN  DEFAULT 1,
+	`status` INT(3) DEFAULT 0,
 	PRIMARY KEY (`id`)
 );
 ALTER TABLE `order_item`
 ADD CONSTRAINT fk_order_item_order_id FOREIGN KEY (order_id) REFERENCES `order`(id),
 ADD CONSTRAINT fk_order_item_album_id FOREIGN KEY (album_id) REFERENCES `album`(id),
-ADD CONSTRAINT fk_order_item_track_id FOREIGN KEY (track_id) REFERENCES `track`(id);
+ADD CONSTRA``INT fk_order_item_track_id FOREIGN KEY (track_id) REFERENCES `track`(id);

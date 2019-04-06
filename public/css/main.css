@@ -19,6 +19,51 @@ footer {
     z-index: 100;
 }
 
+/*.table-cs thead {*/
+    /*display: none !important;*/
+/*}*/
+
+.table-cs thead tr th {
+    border-top: 0;
+    border-bottom: 0;
+    padding: 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .table-cs thead {
+        display: none !important;
+    }
+
+    .table-cs td.sm-hidden {
+        display: none !important;
+    }
+
+    .sm-hidden {
+        display: none !important;
+    }
+
+    .table-cs tr {
+        border-bottom: 1px solid #DEDFE0;
+    }
+
+    .table-cs td {
+        width: auto;
+        padding: 2px;
+        display: block !important;
+        border: none !important;
+    }
+
+    .table-cs td strong {
+        display: inline-block !important;
+        margin-right: 10px;
+    }
+
+    .table-cs tr .no-border td {
+        border-bottom: none;
+    }
+
+}
+
 /* Footer Align Bottom - END */
 
 .margin-5 {
@@ -1666,6 +1711,10 @@ footer {
 }
 
 @media (min-width: 991px) {
+    .w-lg-100{
+        width: 100%;
+    }
+
     .margin-lg-5 {
         margin: .3125rem !important
     }
@@ -2504,5 +2553,321 @@ footer {
 
     .padding-y-lg-200, .paddingBottom-lg-200 {
         padding-bottom: 12.5rem !important
+    }
+}
+
+.font-size-10 {
+    font-size: .625rem !important
+}
+
+.font-size-12 {
+    font-size: .75rem !important
+}
+
+.font-size-14 {
+    font-size: .875rem !important
+}
+
+.font-size-16 {
+    font-size: 1rem !important
+}
+
+.font-size-18 {
+    font-size: 1.125rem !important
+}
+
+.font-size-20 {
+    font-size: 1.25rem !important
+}
+
+.font-size-22 {
+    font-size: 1.375rem !important
+}
+
+.font-size-24 {
+    font-size: 1.5rem !important
+}
+
+.font-size-26 {
+    font-size: 1.625rem !important
+}
+
+.font-size-28 {
+    font-size: 1.75rem !important
+}
+
+.font-size-30 {
+    font-size: 1.875rem !important
+}
+
+.font-size-32 {
+    font-size: 2rem !important
+}
+
+.font-size-34 {
+    font-size: 2.125rem !important
+}
+
+.font-size-36 {
+    font-size: 2.25rem !important
+}
+
+.font-size-38 {
+    font-size: 2.375rem !important
+}
+
+.font-size-40 {
+    font-size: 2.5rem !important
+}
+
+.font-size-42 {
+    font-size: 2.625rem !important
+}
+
+.font-size-44 {
+    font-size: 2.75rem !important
+}
+
+.font-size-46 {
+    font-size: 2.875rem !important
+}
+
+.font-size-48 {
+    font-size: 3rem !important
+}
+
+.font-size-50 {
+    font-size: 3.125rem !important
+}
+
+.font-size-52 {
+    font-size: 3.25rem !important
+}
+
+.font-size-54 {
+    font-size: 3.375rem !important
+}
+
+.font-size-56 {
+    font-size: 3.5rem !important
+}
+
+.font-size-58 {
+    font-size: 3.625rem !important
+}
+
+.font-size-60 {
+    font-size: 3.75rem !important
+}
+
+@media (min-width: 768px) {
+    .font-size-md-10 {
+        font-size: .625rem !important
+    }
+
+    .font-size-md-12 {
+        font-size: .75rem !important
+    }
+
+    .font-size-md-14 {
+        font-size: .875rem !important
+    }
+
+    .font-size-md-16 {
+        font-size: 1rem !important
+    }
+
+    .font-size-md-18 {
+        font-size: 1.125rem !important
+    }
+
+    .font-size-md-20 {
+        font-size: 1.25rem !important
+    }
+
+    .font-size-md-22 {
+        font-size: 1.375rem !important
+    }
+
+    .font-size-md-24 {
+        font-size: 1.5rem !important
+    }
+
+    .font-size-md-26 {
+        font-size: 1.625rem !important
+    }
+
+    .font-size-md-28 {
+        font-size: 1.75rem !important
+    }
+
+    .font-size-md-30 {
+        font-size: 1.875rem !important
+    }
+
+    .font-size-md-32 {
+        font-size: 2rem !important
+    }
+
+    .font-size-md-34 {
+        font-size: 2.125rem !important
+    }
+
+    .font-size-md-36 {
+        font-size: 2.25rem !important
+    }
+
+    .font-size-md-38 {
+        font-size: 2.375rem !important
+    }
+
+    .font-size-md-40 {
+        font-size: 2.5rem !important
+    }
+
+    .font-size-md-42 {
+        font-size: 2.625rem !important
+    }
+
+    .font-size-md-44 {
+        font-size: 2.75rem !important
+    }
+
+    .font-size-md-46 {
+        font-size: 2.875rem !important
+    }
+
+    .font-size-md-48 {
+        font-size: 3rem !important
+    }
+
+    .font-size-md-50 {
+        font-size: 3.125rem !important
+    }
+
+    .font-size-md-52 {
+        font-size: 3.25rem !important
+    }
+
+    .font-size-md-54 {
+        font-size: 3.375rem !important
+    }
+
+    .font-size-md-56 {
+        font-size: 3.5rem !important
+    }
+
+    .font-size-md-58 {
+        font-size: 3.625rem !important
+    }
+
+    .font-size-md-60 {
+        font-size: 3.75rem !important
+    }
+}
+
+@media (min-width: 992px) {
+    .font-size-lg-10 {
+        font-size: .625rem !important
+    }
+
+    .font-size-lg-12 {
+        font-size: .75rem !important
+    }
+
+    .font-size-lg-14 {
+        font-size: .875rem !important
+    }
+
+    .font-size-lg-16 {
+        font-size: 1rem !important
+    }
+
+    .font-size-lg-18 {
+        font-size: 1.125rem !important
+    }
+
+    .font-size-lg-20 {
+        font-size: 1.25rem !important
+    }
+
+    .font-size-lg-22 {
+        font-size: 1.375rem !important
+    }
+
+    .font-size-lg-24 {
+        font-size: 1.5rem !important
+    }
+
+    .font-size-lg-26 {
+        font-size: 1.625rem !important
+    }
+
+    .font-size-lg-28 {
+        font-size: 1.75rem !important
+    }
+
+    .font-size-lg-30 {
+        font-size: 1.875rem !important
+    }
+
+    .font-size-lg-32 {
+        font-size: 2rem !important
+    }
+
+    .font-size-lg-34 {
+        font-size: 2.125rem !important
+    }
+
+    .font-size-lg-36 {
+        font-size: 2.25rem !important
+    }
+
+    .font-size-lg-38 {
+        font-size: 2.375rem !important
+    }
+
+    .font-size-lg-40 {
+        font-size: 2.5rem !important
+    }
+
+    .font-size-lg-42 {
+        font-size: 2.625rem !important
+    }
+
+    .font-size-lg-44 {
+        font-size: 2.75rem !important
+    }
+
+    .font-size-lg-46 {
+        font-size: 2.875rem !important
+    }
+
+    .font-size-lg-48 {
+        font-size: 3rem !important
+    }
+
+    .font-size-lg-50 {
+        font-size: 3.125rem !important
+    }
+
+    .font-size-lg-52 {
+        font-size: 3.25rem !important
+    }
+
+    .font-size-lg-54 {
+        font-size: 3.375rem !important
+    }
+
+    .font-size-lg-56 {
+        font-size: 3.5rem !important
+    }
+
+    .font-size-lg-58 {
+        font-size: 3.625rem !important
+    }
+
+    .font-size-lg-60 {
+        font-size: 3.75rem !important
     }
 }
