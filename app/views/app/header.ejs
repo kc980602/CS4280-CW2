@@ -1,13 +1,14 @@
 <header class="header-area">
     <!-- Navbar Area -->
-    <div id="sticky-wrapper" class="sticky-wrapper" style="height: 85px;"><div class="oneMusic-main-menu" style="">
+    <div id="sticky-wrapper" class="sticky-wrapper" style="height: 85px;">
+        <div class="oneMusic-main-menu" style="">
             <div class="classy-nav-container breakpoint-off light left">
                 <div class="container">
                     <!-- Menu -->
                     <nav class="classy-navbar justify-content-between" id="oneMusicNav">
 
                         <!-- Nav brand -->
-                        <a href="index.html" class="nav-brand"><img src="img/core-img/logo.png" alt=""></a>
+                        <a href="/" class="nav-brand"><img src="/img/core-img/logo.png" alt=""></a>
 
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
@@ -15,7 +16,7 @@
                         </div>
 
                         <!-- Menu -->
-                        <div class="classy-menu">
+                        <div class="classy-menu w-lg-100">
 
                             <!-- Close Button -->
                             <div class="classycloseIcon">
@@ -24,54 +25,34 @@
 
                             <!-- Nav Start -->
                             <div class="classynav">
-                                <ul>
-                                    <li><a href="index.html">Home</a></li>
-                                    <li><a href="albums-store.html">Albums</a></li>
-                                    <li class="cn-dropdown-item has-down"><a href="#">Pages</a>
-                                        <ul class="dropdown">
-                                            <li><a href="index.html">Home</a></li>
-                                            <li><a href="albums-store.html">Albums</a></li>
-                                            <li><a href="event.html">Events</a></li>
-                                            <li><a href="blog.html">News</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
-                                            <li><a href="elements.html">Elements</a></li>
-                                            <li><a href="login.html">Login</a></li>
-                                            <li class="has-down"><a href="#">Dropdown</a>
-                                                <ul class="dropdown">
-                                                    <li><a href="#">Even Dropdown</a></li>
-                                                    <li><a href="#">Even Dropdown</a></li>
-                                                    <li><a href="#">Even Dropdown</a></li>
-                                                    <li class="has-down"><a href="#">Even Dropdown</a>
-                                                        <ul class="dropdown">
-                                                            <li><a href="#">Deeply Dropdown</a></li>
-                                                            <li><a href="#">Deeply Dropdown</a></li>
-                                                            <li><a href="#">Deeply Dropdown</a></li>
-                                                            <li><a href="#">Deeply Dropdown</a></li>
-                                                            <li><a href="#">Deeply Dropdown</a></li>
-                                                        </ul>
-                                                        <span class="dd-trigger"></span></li>
-                                                    <li><a href="#">Even Dropdown</a></li>
-                                                </ul>
-                                                <span class="dd-trigger"></span></li>
-                                        </ul>
-                                        <span class="dd-trigger"></span></li>
-                                    <li><a href="event.html">Events</a></li>
-                                    <li><a href="blog.html">News</a></li>
-                                    <li><a href="contact.html">Contact</a></li>
-                                </ul>
 
-                                <!-- Login/Register & Cart Button -->
-                                <div class="login-register-cart-button d-flex align-items-center">
-                                    <!-- Login/Register -->
-                                    <div class="login-register-btn mr-50">
-                                        <a href="login.html" id="loginBtn">Login / Register</a>
-                                    </div>
+                                <div class="d-lg-flex align-items-center justify-content-lg-between w-lg-100">
+                                    <ul>
+                                        <li><a href="/">Home</a></li>
+                                        <li><a href="/browse/albums">Browse Music</a></li>
+                                    </ul>
 
-                                    <!-- Cart Button -->
-                                    <div class="cart-btn">
-                                        <p><span class="icon-shopping-cart"></span> <span class="quantity">1</span></p>
+                                    <!-- Login/Register & Cart Button -->
+                                    <div class="login-register-cart-button d-flex align-items-center">
+                                        <!-- Login/Register -->
+                                        <div class="login-register-btn mr-50">
+                                            <a href="/login" id="loginBtn">Login </a>
+                                            <span style="color: #fff;"> / </span>
+                                            <a href="/register" id="loginBtn">Register</a>
+                                        </div>
+
+                                        <!-- Cart Button -->
+                                        <a href="/cart" class="cart-btn marginRight-20">
+                                            <p><span class="icon-shopping-cart"></span></p>
+                                        </a>
+
+                                        <!-- Profile Button -->
+                                        <a href="/cart" class="cart-btn">
+                                            <p><span class="icon-user-1"></span></p>
+                                        </a>
                                     </div>
                                 </div>
+
                             </div>
                             <!-- Nav End -->
 
@@ -79,5 +60,15 @@
                     </nav>
                 </div>
             </div>
-        </div></div>
+        </div>
+    </div>
 </header>
+<!-- Preloader -->
+<div class="preloader d-flex align-items-center justify-content-center">
+    <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
