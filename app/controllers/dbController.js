@@ -1,49 +1,65 @@
 const pool = require('../../mysql/mysql')
 let User = require('../models/user')
 const dbController = new class {
-    get_user_by_username(username, callback) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                connection.release();
-                throw err;
-            }
+    get_user_by_username(username) {
+        return new Promise((resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
 
-            const sql = `SELECT * FROM user
+                const sql = `SELECT * FROM user
                         WHERE username = ? AND status = 0
                         LIMIT 1;`
 
-            connection.query(sql, [username], function (err, rows) {
-                connection.release();
-                if (err) {
-                    callback(err)
-                    return
-                }
-                let user = new User(rows[0].id, rows[0].username, rows[0].password, rows[0].point, rows[0].role, rows[0].status, rows[0].created)
+                connection.query(sql, [username], (err, rows) => {
+                    connection.release();
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+                    if (rows.length === 1) {
+                        let user = new User(rows[0].id, rows[0].username, rows[0].password, rows[0].point, rows[0].role, rows[0].status, rows[0].created)
 
-                callback(err, user)
+                        resolve(user)
+                        return
+                    }
+                    resolve(null)
+                });
+                connection.on('error', (err) => {
+                    resolve(null)
+                });
             });
-            connection.on('error', function (err) {
-                throw err;
-            });
-        });
+        })
     }
     create_user(user, callback) {
-        pool.getConnection(function (err, connection) {
-            if (err) {
-                connection.release();
-                throw err;
-            }
+        return new Promise((resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
 
-            const sql = `INSERT INTO user(\`username\`, \`password\`) VALUES(?, ?);`
+                const sql = `INSERT INTO user(\`username\`, \`password\`) VALUES(?, ?);`
 
-            connection.query(sql, [user.username, user.password], function (err, rows) {
-                connection.release();
-                callback(err, rows)
+                connection.query(sql, [user.username, user.password], (err, result) => {
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+                    if (result.affectedRows === 1) {
+                        resolve(this.get_user_by_username(user.username))
+                    }
+                    resolve(null)
+                });
+                connection.on('error', function (err) {
+                    resolve(null)
+                });
             });
-            connection.on('error', function (err) {
-                throw err;
-            });
-        });
+        })
     }
 }()
 
