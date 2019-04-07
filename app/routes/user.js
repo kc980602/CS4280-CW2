@@ -28,7 +28,7 @@ router.route('/profile/').get(ProtectedRoute, (req, res) => {
     res.redirect('/profile/collection')
 })
 
-router.route('/profile/collection').get((req, res) => {
+router.route('/profile/collection').get(ProtectedRoute, (req, res) => {
     ProfileController.view_collection(req, res)
 })
 

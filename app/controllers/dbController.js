@@ -1,5 +1,6 @@
 const pool = require('../../mysql/mysql')
 let User = require('../models/user')
+let Album = require('../models/album')
 const dbController = new class {
     get_user_by_username(username) {
         return new Promise((resolve) => {
@@ -21,7 +22,7 @@ const dbController = new class {
                         return
                     }
                     if (rows.length === 1) {
-                        let user = new User(rows[0].id, rows[0].username, rows[0].password, rows[0].point, rows[0].role, rows[0].status, rows[0].created)
+                        let user = new User(...Object.values(rows[0]))
 
                         resolve(user)
                         return
@@ -62,7 +63,7 @@ const dbController = new class {
             });
         })
     }
-    get_purchased_collection() {
+    get_purchased_collection_by_user_id(userId) {
         return new Promise((resolve) => {
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -71,18 +72,66 @@ const dbController = new class {
                     return
                 }
 
-                const sql = `SELECT * FROM album;`
+                const sql = `SELECT a.*
+                                FROM \`album\` a, \`order_item\` oi, \`order\` o
+                                WHERE oi.album_id = a.id AND
+                                    oi.order_id = o.id AND
+                                    o.user_id = ?
+                                GROUP BY a.id;`
 
-                connection.query(sql, (err, rows) => {
+                connection.query(sql, [userId], (err, rows) => {
                     connection.release();
-                    console.log(err)
                     if (err) {
                         resolve(null)
                         return
                     }
 
-                    console.log(rows)
-                    resolve(rows)
+                    let result = []
+                    for (let row of rows) {
+                        let album = new Album(...Object.values(row))
+
+                        result.push(album)
+                    }
+                    resolve(result)
+                    return
+                });
+                connection.on('error', (err) => {
+                    resolve(null)
+                });
+            });
+        })
+    }
+    get_purchased_orders_by_user_id(userId) {
+        return new Promise((resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
+
+                const sql = `SELECT o.*, a.*, o.* 
+                                FROM \`album\` a, \`track\` t, \`order_item\` oi, \`order\` o
+                                WHERE oi.album_id = a.id AND
+                                    oi.order_id = o.id AND
+                                    o.user_id = ? AND
+                                    t.album_id = a.id
+                                GROUP BY o.id;`
+
+                connection.query(sql, [userId], (err, rows) => {
+                    connection.release();
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+
+                    let result = []
+                    // for (let row of rows) {
+                    //     let album = new Album(...Object.values(row))
+
+                    //     result.push(album)
+                    // }
+                    resolve(result)
                     return
                 });
                 connection.on('error', (err) => {
