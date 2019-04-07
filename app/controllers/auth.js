@@ -2,8 +2,9 @@ const dbController = require('./dbController')
 const User = require('../models/user')
 const check = require('../../utils/checkQuery');
 const auth = new class {
+
     login(req, res) {
-        if (check(req, [], ['username', 'password'])) res.status(301).redirect('/?err=true');
+        if (check(req, [], ['username', 'password'])) res.status(301).redirect('/login?err=true');
 
         const username = req.body.username;
         const password = req.body.password;
