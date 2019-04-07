@@ -2,29 +2,27 @@ const dbController = require('./dbController')
 const User = require('../models/user')
 const check = require('../../utils/checkQuery');
 const auth = new class {
-
-    login(req, res) {
+    async login(req, res) {
         if (check(req, [], ['username', 'password'])) res.status(301).redirect('/login?err=true');
 
-        const username = req.body.username;
-        const password = req.body.password;
+        let username = req.body.username;
+        let password = req.body.password;
+        let user = await dbController.get_user_by_username(username)
 
-        dbController.get_user_by_username(username, (err, user) => {
-            if (err) {
-                res.status(500).json({
-                    reason: 'User not found'
-                });
-            }
-            console.log(user, user.validPassword(password))
-            if (!user.validPassword(password)) {
-                res.status(301).redirect('/login');
-            } else {
+        if (user) {
+            if (user.validPassword(password)) {
                 req.session.user = user;
                 res.status(301).redirect('/');
+            } else {
+                res.status(301).redirect('/login');
             }
-        })
+        } else {
+            res.status(500).json({
+                reason: 'User not found'
+            });
+        }
     }
-    signup(req, res) {
+    async signup(req, res) {
         if (!req.body.username || !req.body.password) {
             res.status(400).json({
                 reson: 'Missing username or password.'
@@ -35,28 +33,17 @@ const auth = new class {
         let user = new User()
         user.username = req.body.username
         user.password = req.body.password
+        let createdUser = await dbController.create_user(user)
 
-        dbController.create_user(user, (err, rows) => {
-            if (err) {
-                res.status(500).json({
-                    reason: 'Failed to create user.'
-                });
-                return
-            }
-            if (rows.affectedRows === 1) {
-                dbController.get_user_by_username(user.username, (err, createdUser) => {
-                    console.log(err)
-                    if (err) {
-                        res.status(500).json({
-                            reason: 'Failed to login.'
-                        });
-                        return
-                    }
-                    req.session.user = createdUser;
-                    res.status(201).end()
-                })
-            }
-        })
+        console.log(createdUser)
+        if (createdUser) {
+            req.session.user = createdUser;
+            res.status(201).end()
+        } else {
+            res.status(500).json({
+                reason: 'Failed to create user.'
+            });
+        }
     }
     logout(req, res) {
         if (req.session.user && req.cookies.user_sid) {
