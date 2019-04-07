@@ -30,8 +30,8 @@ router.route('/profile/').get(ProtectedRoute, (req, res) => {
 
 router.route('/profile/collection').get(ProtectedRoute, (req, res) => {
     res.render('profile', {
-        tab: 'COLLECTION'
         title: 'Your Library | Mue',
+        tab: 'COLLECTION'
     });
     ProfileController.view_collection(req, res)
 })
