@@ -28,12 +28,12 @@ router.route('/profile/').get(ProtectedRoute, (req, res) => {
     res.redirect('/profile/collection')
 })
 
-router.route('/profile/collection').get((req, res) => {
+router.route('/profile/collection').get(ProtectedRoute, (req, res) => {
     res.render('profile', {
-        title: 'Your Library | Mue',
         tab: 'COLLECTION'
+        title: 'Your Library | Mue',
     });
-    // ProfileController.view_collection(req, res)
+    ProfileController.view_collection(req, res)
 })
 
 router.route('/profile/purchase').get((req, res, next) => {
