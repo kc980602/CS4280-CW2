@@ -34,96 +34,55 @@
 
             </div>
 
-            <!-- A Album Item -->
-            <div class="col-12 mb-3">
-                <div class="new-hits-area padding-30">
-                    <div class="single-new-item align-items-center wow fadeInUp" data-wow-delay="100ms">
-                        <div class="d-flex justify-content-between">
-                            <div class="first-part d-flex align-items-center">
-                                <div class="thumbnail">
-                                    <img src="/img/bg-img/wt7.jpg" alt="">
+            <% for(var i = 0; i < 10; i++) { %>
+                <!-- A Album Item -->
+                <div class="col-12 mb-3">
+                    <div class="new-hits-area padding-30">
+                        <div class="single-new-item align-items-center wow fadeInUp" data-wow-delay="100ms">
+                            <div class="d-flex justify-content-between">
+                                <div class="first-part d-flex align-items-center">
+                                    <div class="thumbnail">
+                                        <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
+                                    </div>
+                                    <div class="content-">
+                                        <h6>Underground</h6>
+                                        <p>Sam Smith</p>
+                                        <p>12 Songs</p>
+                                    </div>
                                 </div>
-                                <div class="content-">
-                                    <h6>Underground</h6>
-                                    <p>Sam Smith</p>
-                                    <p>12 Songs</p>
+                                <div>
+                                    <p class="font-size-20 font-weight-bold">$0.90</p>
                                 </div>
                             </div>
-                            <div>
-                                <p class="font-size-20 font-weight-bold">$0.90</p>
-                            </div>
+
+                            <table class="table table-cs mt-3 mb-0" width="100%">
+                                <thead>
+                                <tr style="height: 1px">
+                                    <th style="width: 5%;"></th>
+                                    <th style="width: 70%;"></th>
+                                    <th style="width: 10%;"></th>
+                                    <th style="width: 10%;"></th>
+                                    <th style="width: 5%;"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% for(var j = 0; j < 5; j++) { %>
+                                    <tr>
+                                        <td><i class="icon-music"></i></td>
+                                        <td>Stars Stars Stars Stars</td>
+                                        <td>2:34</td>
+                                        <td>$9.99</td>
+                                        <td class="text-right"><a href="" class="font-size-14 font-weight-light">Remove</a></td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+
                         </div>
 
-                        <table class="table table-cs mt-3 mb-0" width="100%">
-                            <thead>
-                            <tr style="height: 1px">
-                                <th style="width: 5%;"></th>
-                                <th style="width: 70%;"></th>
-                                <th style="width: 10%;"></th>
-                                <th style="width: 10%;"></th>
-                                <th style="width: 5%;"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><i class="icon-music"></i></td>
-                                <td>Stars Stars Stars Stars</td>
-                                <td>2:34</td>
-                                <td>$9.99</td>
-                                <td class="text-right"><a href="" class="font-size-14 font-weight-light">Remove</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
                     </div>
-
                 </div>
-            </div>
-            <!-- A Album Item -->
-            <div class="col-12 mb-3">
-                <div class="new-hits-area padding-30">
-                    <div class="single-new-item align-items-center wow fadeInUp" data-wow-delay="100ms">
-                        <div class="d-flex  justify-content-between">
-                            <div class="first-part d-flex align-items-center">
-                                <div class="thumbnail">
-                                    <img src="/img/bg-img/wt7.jpg" alt="">
-                                </div>
-                                <div class="content-">
-                                    <h6>Underground</h6>
-                                    <p>Sam Smith</p>
-                                    <p>12 Songs</p>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="font-size-20 font-weight-bold">$0.90</p>
-                            </div>
-                        </div>
-
-                        <table class="table table-cs mt-3 mb-0" width="100%">
-                            <thead>
-                            <tr style="height: 1px">
-                                <th style="width: 5%;"></th>
-                                <th style="width: 70%;"></th>
-                                <th style="width: 10%;"></th>
-                                <th style="width: 10%;"></th>
-                                <th style="width: 5%;"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><i class="icon-music"></i></td>
-                                <td>Stars Stars Stars Stars</td>
-                                <td>2:34</td>
-                                <td>$9.99</td>
-                                <td class="text-right"><a href="" class="font-size-14 font-weight-light">Remove</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                </div>
-            </div>
+            <% } %>
         </div>
     </div>
 </section>
