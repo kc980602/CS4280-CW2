@@ -24,10 +24,10 @@
     <div class="container">
         <div class="row">
             <!--<div class="col-12 col-lg-3">-->
-                <!--<div class="">-->
+            <!--<div class="">-->
 
 
-                <!--</div>-->
+            <!--</div>-->
             <!--</div>-->
 
             <div class="col-12">
@@ -36,9 +36,9 @@
                     <div class="container">
                         <div class="row">
 
-                            <% for(var i=0; i < 10; i++) { %>
+                            <% for(var i = 0; i < 10; i++) { %>
                                 <div class="col-6 col-md-3">
-                                    <div class="single-album-area">
+                                    <a href="/album/123" class="single-album-area">
                                         <div class="album-thumb">
                                             <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
                                             <div class="album-price">
@@ -46,20 +46,15 @@
                                             </div>
                                         </div>
                                         <div class="album-info">
-                                            <a href="#">
-                                                <h5>Noises</h5>
-                                            </a>
+                                            <h5>Noises</h5>
                                             <p>Buble Gum</p>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             <% } %>
-
-
                         </div>
                     </div>
                 </section>
-                <!-- ##### Album Catagory Area End ##### -->
 
                 <!-- Pagination -->
                 <div class="oneMusic-pagination-area wow fadeInUp" data-wow-delay="300ms">
@@ -76,8 +71,7 @@
         </div>
     </div>
 </div>
-<!-- ##### Blog Area End ##### -->
-
+<!-- ##### Album Area End ##### -->
 <% include ./app/footer.ejs %>
 </body>
 </html>

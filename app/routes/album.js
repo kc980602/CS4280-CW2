@@ -7,7 +7,7 @@ router.get('/browse/albums', function(req, res, next) {
 });
 
 router.get('/album/:id', function(req, res, next) {
-    res.render('albums', { title: 'Browse Albums | Mue' });
+    res.render('album', { title: 'Browse Albums | Mue' });
 });
 
 

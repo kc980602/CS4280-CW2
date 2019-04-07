@@ -19,14 +19,25 @@ footer {
     z-index: 100;
 }
 
-/*.table-cs thead {*/
-    /*display: none !important;*/
-/*}*/
+.btn-dark {
+    background-color: #000000;
+}
+
+.btn-xs {
+    padding: 0.25rem 0.4375rem;
+    font-size: 11px;
+}
+
+.table-cs thead tr th.hidden {
+    border-top: 0;
+    border-bottom: 0;
+    padding: 0;
+}
+
 
 .table-cs thead tr th {
     border-top: 0;
     border-bottom: 0;
-    padding: 0;
 }
 
 @media only screen and (max-width: 767px) {
