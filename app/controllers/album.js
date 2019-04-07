@@ -1,5 +1,5 @@
 const dbController = require('./dbController')
-const profile = new class {
+const album = new class {
     async view_album(req, res) {
         let albumId = req.query.id
         let album = await dbController.get_album_by_album_id(albumId)
@@ -7,7 +7,7 @@ const profile = new class {
 
         if(req.login){
             let user = req.session.user
-            
+
             hasPurchased = await dbController.check_album_has_purchased(albumId, user.id)
         }
 
@@ -19,7 +19,7 @@ const profile = new class {
                 hasPurchased: hasPurchased
             })
         } else {
-            res.res(500).end()
+            res.status(500).end()
         }
     }
     async view_all_album(req, res) {
@@ -32,9 +32,9 @@ const profile = new class {
                 albumList: albumList,
             })
         } else {
-            res.res(500).end()
+            res.status(500).end()
         }
     }
 }()
 
-module.exports = profile
+module.exports = album

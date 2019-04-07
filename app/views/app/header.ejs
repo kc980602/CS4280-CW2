@@ -35,21 +35,22 @@
                                     <!-- Login/Register & Cart Button -->
                                     <div class="login-register-cart-button d-flex align-items-center">
                                         <!-- Login/Register -->
-                                        <div class="login-register-btn mr-50">
-                                            <a href="/login" id="loginBtn">Login </a>
-                                            <span style="color: #fff;"> / </span>
-                                            <a href="/register" id="loginBtn">Register</a>
-                                        </div>
-
-                                        <!-- Cart Button -->
-                                        <a href="/cart" class="cart-btn marginRight-20">
-                                            <p><span class="icon-shopping-cart"></span></p>
-                                        </a>
-
-                                        <!-- Profile Button -->
-                                        <a href="/profile/collection" class="cart-btn">
-                                            <p><span class="icon-user-1"></span></p>
-                                        </a>
+                                        <% if (!isLogin) { %>
+                                            <div class="login-register-btn mr-50">
+                                                <a href="/login" id="loginBtn">Login </a>
+                                                <span style="color: #fff;"> / </span>
+                                                <a href="/register" id="loginBtn">Register</a>
+                                            </div>
+                                        <% } else { %>
+                                            <!-- Cart Button -->
+                                            <a href="/cart" class="cart-btn marginRight-20">
+                                                <p><span class="icon-shopping-cart"></span></p>
+                                            </a>
+                                            <!-- Profile Button -->
+                                            <a href="/profile/collection" class="cart-btn">
+                                                <p><span class="icon-user-1"></span></p>
+                                            </a>
+                                        <% } %>
                                     </div>
                                 </div>
 
