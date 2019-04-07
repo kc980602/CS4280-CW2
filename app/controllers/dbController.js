@@ -9,7 +9,7 @@ const dbController = new class {
             }
 
             const sql = `SELECT * FROM user
-                        WHERE username = ?
+                        WHERE username = ? AND status = 0
                         LIMIT 1;`
 
             connection.query(sql, [username], function (err, rows) {

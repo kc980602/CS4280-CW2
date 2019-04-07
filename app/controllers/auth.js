@@ -1,16 +1,13 @@
 const dbController = require('./dbController')
-let User = require('../models/user')
-const AuthController = new class {
-    login(req, res) {
-        if (!req.body.username || !req.body.password) {
-            res.status(400).json({
-                reson: 'Missing username or password.'
-            })
-            return
-        }
+const User = require('../models/user')
+const check = require('../../utils/checkQuery');
+const auth = new class {
 
-        let username = req.body.username;
-        let password = req.body.password;
+    login(req, res) {
+        if (check(req, [], ['username', 'password'])) res.status(301).redirect('/login?err=true');
+
+        const username = req.body.username;
+        const password = req.body.password;
 
         dbController.get_user_by_username(username, (err, user) => {
             if (err) {
@@ -71,4 +68,4 @@ const AuthController = new class {
     }
 }()
 
-module.exports = AuthController
+module.exports = auth
