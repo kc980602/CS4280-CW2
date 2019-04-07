@@ -29,8 +29,6 @@ Route Design
 /admin -> statistics of sales
 /admin/product
 /admin/product/add
-/admin/product/album
-/admin/product/track
 /admin/refund
 
 -Browse albums, query from album DB

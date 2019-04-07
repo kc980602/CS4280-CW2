@@ -29,10 +29,18 @@ router.route('/profile/').get(ProtectedRoute, (req, res) => {
 })
 
 router.route('/profile/collection').get(ProtectedRoute, (req, res) => {
+    res.render('profile', {
+        title: 'Your Library | Mue',
+        tab: 'COLLECTION'
+    });
     ProfileController.view_collection(req, res)
 })
 
-router.route('/profile/purchase').get(ProtectedRoute, (req, res, next) => {
+router.route('/profile/purchase').get((req, res, next) => {
+    res.render('profile', {
+        title: 'Purchase History | Mue',
+        tab: 'PURCHASE'
+    });
     ProfileController.view_purchase(req, res)
 })
 

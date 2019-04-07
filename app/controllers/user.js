@@ -19,7 +19,7 @@ const user = new class {
                 res.status(301).render('login', {err: true, reason: 'Incorrect password.'});
             }
         } else {
-            res.status(500).render('login', {err: true, reason: 'Username not found.'});
+            res.status(400).render('login', {err: true, reason: 'User not found.'});
         }
     }
     async signup(req, res) {
