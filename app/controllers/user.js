@@ -16,15 +16,24 @@ const user = new class {
                 req.session.user = user;
                 res.status(301).redirect('/');
             } else {
-                res.status(301).render('login', {err: true, reason: 'Incorrect password.'});
+                res.status(301).render('login', {
+                    title: 'Login | Mue',
+                    err: true,
+                    reason: 'Incorrect password.'
+                });
             }
         } else {
-            res.status(400).render('login', {err: true, reason: 'User not found.'});
+            res.status(400).render('login', {
+                title: 'Login | Mue',
+                err: true,
+                reason: 'User not found.'
+            });
         }
     }
     async signup(req, res) {
         if (!req.body.username || !req.body.password) {
             res.status(400).render('register', {
+                title: 'Register | Mue',
                 err: true,
                 reson: 'Missing username or password.'
             })
@@ -39,9 +48,10 @@ const user = new class {
         console.log(createdUser)
         if (createdUser) {
             req.session.user = createdUser;
-            res.status(201).end()
+            res.status(201).redirect('/')
         } else {
             res.status(500).render('register', {
+                title: 'Register | Mue',
                 err: true,
                 reason: 'Failed to create user.'
             });
