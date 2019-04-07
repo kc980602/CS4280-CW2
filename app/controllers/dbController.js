@@ -114,7 +114,7 @@ const dbController = new class {
                                 FROM \`album\` a, \`track\` t, \`order_item\` oi, \`order\` o
                                 WHERE oi.album_id = a.id AND
                                     oi.order_id = o.id AND
-                                    o.user_id = ? AND
+                                    o.user_id = '?' AND
                                     t.album_id = a.id
                                 GROUP BY o.id;`
 
@@ -133,6 +133,119 @@ const dbController = new class {
                     // }
                     resolve(result)
                     return
+                });
+                connection.on('error', (err) => {
+                    resolve(null)
+                });
+            });
+        })
+    }
+    get_album_by_album_id(albumId) {
+        return new Promise((resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
+
+                const sql = `SELECT a.*, t.* 
+                                FROM \`album\` a, \`track\` t
+                                WHERE t.album_id = a.id AND
+                                    a.id = ?
+                                GROUP BY a.id
+                                ORDER BY a.title ASC;`
+
+                connection.query(sql, [albumId], (err, rows) => {
+                    connection.release();
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+
+                    if (rows.length >= 1) {
+                        let album = new Album(...Object.values(rows[0]))
+
+                        resolve(album)
+                        return
+                    }
+                    resolve(null)
+                });
+                connection.on('error', (err) => {
+                    resolve(null)
+                });
+            });
+        })
+    }
+    check_album_has_purchased(albumId, userId) {
+        return new Promise(async (resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
+
+                const sql = `SELECT *
+                                FROM \`album\`
+                                WHERE id = ? AND
+                                    id in (
+                                        SELECT oi.album_id
+                                        FROM \`order_item\` oi, \`order\` o
+                                        WHERE oi.order_id = o.id AND
+                                            o.user_id = ?
+                                    )`
+
+                connection.query(sql, [albumId, userId], (err, rows) => {
+                    connection.release();
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+
+                    if (rows.length >= 1) {
+                        resolve(true)
+                        return
+                    }
+                    resolve(false)
+                });
+                connection.on('error', (err) => {
+                    resolve(null)
+                });
+            });
+        })
+    }
+    get_all_album() {
+        return new Promise(async (resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
+
+                const sql = `SELECT *
+                                FROM \`album\``
+
+                connection.query(sql, (err, rows) => {
+                    connection.release();
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+
+                    if (rows.length >= 1) {
+                        let result = []
+
+                        for(let row of rows){
+                            let album = new Album(...Object.values(row))
+
+                            result.push(album)
+                        }
+                        resolve(result)
+                        return
+                    }
+                    resolve(false)
                 });
                 connection.on('error', (err) => {
                     resolve(null)

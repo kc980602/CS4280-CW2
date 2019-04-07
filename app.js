@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var logger = require('morgan');
+var LoginChecker = require('./app/middlewares/LoginChecker')
 
 var indexRouter = require('./app/routes/index');
 var userRouter = require('./app/routes/user');
@@ -37,6 +38,7 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(LoginChecker);
 app.use('/', indexRouter);
 app.use('/', userRouter);
 app.use('/', albumRouter);

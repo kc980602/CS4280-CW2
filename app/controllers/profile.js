@@ -6,6 +6,7 @@ const profile = new class {
 
         if (collection) {
             res.render('collection', {
+                isLogin: req.login,
                 collection: collection
             })
         } else {
@@ -18,6 +19,7 @@ const profile = new class {
 
         if (orders) {
             res.render('purchase', {
+                isLogin: req.login,
                 collection: orders
             })
         } else {

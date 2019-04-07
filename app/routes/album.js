@@ -1,13 +1,13 @@
-var express = require('express');
-var router = express.Router();
-// var controllerUser = require('../controllers/user')
+const express = require('express');
+const router = express.Router();
+const AlbumController = require('../controllers/album');
 
-router.get('/browse/albums', function(req, res, next) {
-    res.render('albums', { title: 'Browse Albums | Mue' });
+router.get('/browse/albums', (req, res) => {
+    AlbumController.view_all_album(req.res)
 });
 
-router.get('/album/:id', function(req, res, next) {
-    res.render('album', { title: 'Browse Albums | Mue' });
+router.get('/album/:id', (req, res) => {
+    AlbumController.view_album(req.res)
 });
 
 
