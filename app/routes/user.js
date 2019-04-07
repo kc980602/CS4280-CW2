@@ -6,14 +6,21 @@ const ProtectedRoute = require('../middlewares/ProtectedRoute')
 
 router.route('/login').get((req, res) => {
     res.render('login', {
-        title: 'Login | Mue'
+        title: 'Login | Mue',
+        isLogin: req.login,
     });
     res.end();
 }).post((req, res) => {
     AuthController.login(req, res)
 });
 
-router.route('/signup').post((req, res) => {
+router.route('/register').get((req, res) => {
+    res.render('register', {
+        title: 'Register | Mue',
+        isLogin: req.login,
+    });
+    res.end();
+}).post((req, res) => {
     AuthController.signup(req, res)
 });
 
@@ -21,7 +28,7 @@ router.route('/logout').get((req, res) => {
     AuthController.logout(req, res)
 });
 
-router.route('/profile/').get(ProtectedRoute, (req, res) => {
+router.route('/profile').get(ProtectedRoute, (req, res) => {
     res.redirect('/profile/collection')
 })
 
@@ -31,7 +38,7 @@ router.route('/profile/collection').get(ProtectedRoute, (req, res) => {
         isLogin: req.login,
         tab: 'COLLECTION'
     });
-    ProfileController.view_collection(req, res)
+    // ProfileController.view_collection(req, res)
 })
 
 router.route('/profile/purchase').get((req, res, next) => {
@@ -40,7 +47,7 @@ router.route('/profile/purchase').get((req, res, next) => {
         isLogin: req.login,
         tab: 'PURCHASE'
     });
-    ProfileController.view_purchase(req, res)
+    // ProfileController.view_purchase(req, res)
 })
 
 

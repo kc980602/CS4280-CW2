@@ -10,7 +10,7 @@ const profile = new class {
                 collection: collection
             })
         } else {
-            res.res(500).end()
+            res.status(500).end()
         }
     }
     async view_purchase(req, res) {
@@ -23,7 +23,7 @@ const profile = new class {
                 collection: orders
             })
         } else {
-            res.res(500).end()
+            res.status(500).end()
         }
     }
 }()
