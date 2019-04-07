@@ -6,6 +6,8 @@ App name - Mue
 
 #Submission 1 - Work Done 
 Cheung Pui Lam
+- Database design
+- All route design
 - All UI
 - Login connect business method
 - Setup project
