@@ -16,17 +16,16 @@ const user = new class {
                 req.session.user = user;
                 res.status(301).redirect('/');
             } else {
-                res.status(301).redirect('/login');
+                res.status(301).render('login', {err: true, reason: 'Incorrect password.'});
             }
         } else {
-            res.status(500).json({
-                reason: 'User not found'
-            });
+            res.status(500).render('login', {err: true, reason: 'Username not found.'});
         }
     }
     async signup(req, res) {
         if (!req.body.username || !req.body.password) {
-            res.status(400).json({
+            res.status(400).render('register', {
+                err: true,
                 reson: 'Missing username or password.'
             })
             return
@@ -42,7 +41,8 @@ const user = new class {
             req.session.user = createdUser;
             res.status(201).end()
         } else {
-            res.status(500).json({
+            res.status(500).render('register', {
+                err: true,
                 reason: 'Failed to create user.'
             });
         }
