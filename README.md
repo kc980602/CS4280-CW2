@@ -3,7 +3,36 @@
 Music Store Web Site 
 App name - Mue
 
-Route Design
+
+#Submission 1 - Work Done 
+Cheung Pui Lam
+- All UI
+- Login connect business method
+- Setup project
+- Setup database
+
+MAK Kai Chung
+- Login business logic (draft)
+- Register business logic (draft)
+- Album business logic (draft)
+- User business login (draft)
+
+CHEUNG Pak Lun
+- NONE
+
+#Submission 2 - Pending
+Cheung Pui Lam
+- All UI
+- Complete Cart and Checkout
+
+MAK Kai Chung
+- Complete Album
+- Complete User
+
+CHEUNG Pak Lun
+- Complete Admin page
+
+#Route Design
 
 -Documentation static page
 /my-design
@@ -37,7 +66,7 @@ Route Design
 -Browse tracks, query from track DB
 /browse/tracks
 
-Database design
+#Database design
 
 A track must belong to a album
 
@@ -55,6 +84,7 @@ A track must belong to a album
 	id, album.id, title, artist, length, price, quantity, file, file_preview, status, created
 
 DROP TABLE IF EXISTS `user`;
+
 CREATE TABLE `user` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`username` VARCHAR(20) NOT NULL,
@@ -65,9 +95,14 @@ CREATE TABLE `user` (
 	`created` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
+
 ALTER TABLE `user` ADD UNIQUE(username);
 
+
+
+
 DROP TABLE IF EXISTS `album`;
+
 CREATE TABLE `album` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`title` VARCHAR(100) NOT NULL,
@@ -80,6 +115,7 @@ CREATE TABLE `album` (
 );
 
 DROP TABLE IF EXISTS `track`;
+
 CREATE TABLE `track` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`album_id` INT(10) NOT NULL,
@@ -94,10 +130,12 @@ CREATE TABLE `track` (
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
+
 ALTER TABLE `track`
 ADD CONSTRAINT fk_track_album_id FOREIGN KEY (album_id) REFERENCES album(id);
 
 DROP TABLE IF EXISTS `cart`;
+
 CREATE TABLE `cart` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`user_id` INT(10) NOT NULL,
@@ -106,12 +144,14 @@ CREATE TABLE `cart` (
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
+
 ALTER TABLE `cart`
 ADD CONSTRAINT fk_cart_user_id FOREIGN KEY (user_id) REFERENCES user(id),
 ADD CONSTRAINT fk_cart_album_id FOREIGN KEY (album_id) REFERENCES album(id),
 ADD CONSTRAINT fk_cart_track_id FOREIGN KEY (track_id) REFERENCES track(id);
 
 DROP TABLE IF EXISTS `order`;
+
 CREATE TABLE `order` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`user_id` INT(10) NOT NULL,
@@ -119,10 +159,12 @@ CREATE TABLE `order` (
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
 );
+
 ALTER TABLE `order`
 ADD CONSTRAINT fk_order_user_id FOREIGN KEY (user_id) REFERENCES user(id);
 
 DROP TABLE IF EXISTS `order_item`;
+
 CREATE TABLE `order_item` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT,
 	`order_id` INT(10) NOT NULL,
@@ -133,6 +175,7 @@ CREATE TABLE `order_item` (
 	`status` INT(3) DEFAULT 0,
 	PRIMARY KEY (`id`)
 );
+
 ALTER TABLE `order_item`
 ADD CONSTRAINT fk_order_item_order_id FOREIGN KEY (order_id) REFERENCES `order`(id),
 ADD CONSTRAINT fk_order_item_album_id FOREIGN KEY (album_id) REFERENCES `album`(id),
