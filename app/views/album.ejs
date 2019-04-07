@@ -17,25 +17,24 @@
 <!-- ##### Album Area Start ##### -->
 <div class="album-catagory padding-y-20 padding-y-md-50">
     <div class="container">
-        <h1>The Ones That Like Me</h1>
-        <p class="font-size-16">Buble Gum</p>
+
         <div class="row">
 
             <div class="col-12 col-md-4">
                 <div class="text-center">
                     <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" width="100%" alt="">
-                    <div>
-                        <div class="">MEMBER PRICE:
-                            <span ng-if="!accountModel.emuTokenPurchaseAllowed" class="ng-scope">&nbsp;</span>
-                        </div>
-                        <div class="price" ng-style="{ 'margin-top': !accountModel.emuTokenPurchaseAllowed ? '0' : '' }"
-                             bind-html-compile="albumCtrl.getFiatPriceString(albumCtrl.release, true)" style="margin-top: 0px;"><span
-                                    class="bold ng-scope">$2.49</span></div>
+                    <div class="mt-4">
+                        <span class="font-size-20">Full Album: </span><span class="font-size-30 font-weight-bold">$12</span>
                     </div>
+                    <a href="#" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Add To Cart</a>
                 </div>
             </div>
 
             <div class="col-12 col-md-8">
+
+                <h1 class="mb-0">The Ones That Like Me</h1>
+                <p class="font-size-16 mb-0">By Buble Gum</p>
+                <p class="font-size-16 text-secondary">2016 • 34 Tracks </p>
                 <table class="table table-cs mt-3 mb-0" width="100%">
                     <thead>
                     <tr style="height: 1px">
