@@ -7,9 +7,10 @@ var session = require('express-session');
 var logger = require('morgan');
 
 var indexRouter = require('./app/routes/index');
+var userRouter = require('./app/routes/user');
 var albumRouter = require('./app/routes/album');
-var cartRouter = require('./app/routes/cart');
-var authRouter = require('./app/routes/auth');
+var shopRouter = require('./app/routes/shop');
+
 
 var app = express();
 
@@ -59,5 +60,3 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
-var shopRouter = require('./app/routes/shop');
-var userRouter = require('./app/routes/user');
