@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const AuthController = require('../controllers/user');
+const ProfileController = require('../controllers/profile');
 const ProtectedRoute = require('../middlewares/ProtectedRoute')
 
 router.route('/login').get((req, res) => {
@@ -19,14 +20,21 @@ router.route('/signup').get((req, res) => {
     AuthController.signup(req, res)
 });
 
-router.route('/protected').get(ProtectedRoute, (req, res) => {
-    console.log(req.cookies.user_sid)
-    res.end()
-})
-
 router.route('/logout').get((req, res) => {
     AuthController.logout(req, res)
 });
+
+router.route('/profile/').get(ProtectedRoute, (req, res) => {
+    res.redirect('/profile/collection')
+})
+
+router.route('/profile/collection').get((req, res) => {
+    ProfileController.view_collection(req, res)
+})
+
+router.route('/profile/purchase').get(ProtectedRoute, (req, res, next) => {
+    ProfileController.view_purchase(req, res)
+})
 
 
 module.exports = router;

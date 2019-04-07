@@ -1,7 +1,6 @@
 const dbController = require('./dbController')
 const profile = new class {
     async view_collection(req, res) {
-        console.log(req.session)
         let user = req.session.user
         let result = await dbController.get_purchased_collection()
         
