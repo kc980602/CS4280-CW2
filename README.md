@@ -33,38 +33,33 @@ CHEUNG Pak Lun
 - Complete Admin page
 
 #Route Design
-
--Documentation static page
-/my-design
-
 -Index page
-/ 
+- / 
+
 -Sign in / Sign out
-/login
-/register
+- /login
+- /register
 
 -My purchase
-/profile
-/profile/collection
-/profile/purchase
+- /profile/collection
+- /profile/purchase
 
 -Shopping cart
-/cart
+- /cart
 
 -Checkout
-/checkout
+- /checkout
 
 -Admin page
-/admin -> statistics of sales
-/admin/product
-/admin/product/add
-/admin/refund
+- /admin -> statistics of sales
+- /admin/product
+- /admin/product/add
+- /admin/product/album/:id
+- /admin/product/refund
 
 -Browse albums, query from album DB
-/browse redirect /browse/albums
-/browse/albums
--Browse tracks, query from track DB
-/browse/tracks
+- /browse/albums
+- /browse/albums/:id
 
 #Database design
 
