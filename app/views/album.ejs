@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <head>
-        <% include ./app/head.ejs %>
-    </head>
+    <% include ./app/head.ejs %>
 </head>
 <body>
 <!-- ##### Header Area Start ##### -->
@@ -30,7 +28,9 @@
                         <div class="">MEMBER PRICE:
                             <span ng-if="!accountModel.emuTokenPurchaseAllowed" class="ng-scope">&nbsp;</span>
                         </div>
-                        <div class="price" ng-style="{ 'margin-top': !accountModel.emuTokenPurchaseAllowed ? '0' : '' }" bind-html-compile="albumCtrl.getFiatPriceString(albumCtrl.release, true)" style="margin-top: 0px;"><span class="bold ng-scope">$2.49</span></div>
+                        <div class="price" ng-style="{ 'margin-top': !accountModel.emuTokenPurchaseAllowed ? '0' : '' }"
+                             bind-html-compile="albumCtrl.getFiatPriceString(albumCtrl.release, true)" style="margin-top: 0px;"><span
+                                    class="bold ng-scope">$2.49</span></div>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,9 @@
                             <td>Buble Gum</td>
                             <td>2:34</td>
                             <td>$9.99</td>
-                            <td class="text-right"><button class="btn btn-dark btn-xs">Add</button></td>
+                            <td class="text-right">
+                                <button class="btn btn-dark btn-xs">Add</button>
+                            </td>
                         </tr>
                     <% } %>
                     </tbody>
