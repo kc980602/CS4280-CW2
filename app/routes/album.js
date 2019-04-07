@@ -1,13 +1,16 @@
-var express = require('express');
-var router = express.Router();
-// var controllerUser = require('../controllers/user')
+const express = require('express');
+const router = express.Router();
 
-router.get('/browse/albums', function(req, res, next) {
-    res.render('albums', { title: 'Browse Albums | Mue' });
+router.get('/browse/albums', (req, res) => {
+    res.render('albums', {
+        title: 'Browse Albums | Mue'
+    });
 });
 
-router.get('/album/:id', function(req, res, next) {
-    res.render('album', { title: 'Browse Albums | Mue' });
+router.get('/album/:id', (req, res) => {
+    res.render('album', {
+        title: 'Browse Albums | Mue'
+    });
 });
 
 
