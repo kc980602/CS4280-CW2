@@ -43,7 +43,8 @@ const dbController = new class {
                     return
                 }
 
-                const sql = `INSERT INTO user(\`username\`, \`password\`) VALUES(?, ?);`
+                const sql = `INSERT INTO user(\`username\`, \`password\`)
+                                VALUES(?, ?);`
 
                 connection.query(sql, [user.username, user.password], (err, result) => {
                     if (err) {
@@ -56,6 +57,35 @@ const dbController = new class {
                     resolve(null)
                 });
                 connection.on('error', function (err) {
+                    resolve(null)
+                });
+            });
+        })
+    }
+    get_purchased_collection() {
+        return new Promise((resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
+
+                const sql = `SELECT * FROM album;`
+
+                connection.query(sql, (err, rows) => {
+                    connection.release();
+                    console.log(err)
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+
+                    console.log(rows)
+                    resolve(rows)
+                    return
+                });
+                connection.on('error', (err) => {
                     resolve(null)
                 });
             });

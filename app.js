@@ -8,9 +8,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./app/routes/index');
 var albumRouter = require('./app/routes/album');
-var shopRouter = require('./app/routes/shop');
+var cartRouter = require('./app/routes/cart');
 var authRouter = require('./app/routes/auth');
-
 
 var app = express();
 
@@ -38,10 +37,9 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/', authRouter);
+app.use('/', userRouter);
 app.use('/', albumRouter);
 app.use('/', shopRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -60,3 +58,6 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
+var shopRouter = require('./app/routes/shop');
+var userRouter = require('./app/routes/user');

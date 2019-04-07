@@ -1,9 +1,11 @@
 const dbController = require('./dbController')
 const User = require('../models/user')
 const check = require('../../utils/checkQuery');
-const auth = new class {
+const user = new class {
     async login(req, res) {
-        if (check(req, [], ['username', 'password'])) res.status(301).redirect('/login?err=true');
+        if (check(req, [], ['username', 'password'])) {
+            res.status(301).redirect('/login?err=true');
+        }
 
         let username = req.body.username;
         let password = req.body.password;
@@ -14,17 +16,16 @@ const auth = new class {
                 req.session.user = user;
                 res.status(301).redirect('/');
             } else {
-                res.status(301).redirect('/login');
+                res.status(301).render('login', {err: true, reason: 'Incorrect password.'});
             }
         } else {
-            res.status(500).json({
-                reason: 'User not found'
-            });
+            res.status(500).render('login', {err: true, reason: 'Username not found.'});
         }
     }
     async signup(req, res) {
         if (!req.body.username || !req.body.password) {
-            res.status(400).json({
+            res.status(400).render('register', {
+                err: true,
                 reson: 'Missing username or password.'
             })
             return
@@ -40,7 +41,8 @@ const auth = new class {
             req.session.user = createdUser;
             res.status(201).end()
         } else {
-            res.status(500).json({
+            res.status(500).render('register', {
+                err: true,
                 reason: 'Failed to create user.'
             });
         }
@@ -55,4 +57,4 @@ const auth = new class {
     }
 }()
 
-module.exports = auth
+module.exports = user
