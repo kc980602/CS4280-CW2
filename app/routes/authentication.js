@@ -4,7 +4,6 @@ const AuthController = require('../controllers/AuthController');
 const ProtectedRoute = require('../middlewares/ProtectedRoute')
 
 router.route('/login').get(function (req, res, next) {
-    // dbController.get_user_by_username('Kinney');
     res.end();
 }).post((req, res) => {
     AuthController.login(req, res)

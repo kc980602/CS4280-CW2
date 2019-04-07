@@ -14,7 +14,10 @@ const dbController = new class {
 
             connection.query(sql, [username], function (err, rows) {
                 connection.release();
-
+                if (err) {
+                    callback(err)
+                    return
+                }
                 let user = new User(rows[0].id, rows[0].username, rows[0].password, rows[0].point, rows[0].role, rows[0].status, rows[0].created)
 
                 callback(err, user)
