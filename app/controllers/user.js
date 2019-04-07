@@ -1,9 +1,11 @@
 const dbController = require('./dbController')
 const User = require('../models/user')
 const check = require('../../utils/checkQuery');
-const auth = new class {
+const user = new class {
     async login(req, res) {
-        if (check(req, [], ['username', 'password'])) res.status(301).redirect('/login?err=true');
+        if (check(req, [], ['username', 'password'])) {
+            res.status(301).redirect('/login?err=true');
+        }
 
         let username = req.body.username;
         let password = req.body.password;
@@ -55,4 +57,4 @@ const auth = new class {
     }
 }()
 
-module.exports = auth
+module.exports = user
