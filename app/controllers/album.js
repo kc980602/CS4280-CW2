@@ -13,9 +13,23 @@ const profile = new class {
 
         if (album) {
             res.render('album', {
+                title: 'Browse Album | Mue',
                 isLogin: req.login,
                 album: album,
                 hasPurchased: hasPurchased
+            })
+        } else {
+            res.res(500).end()
+        }
+    }
+    async view_all_album(req, res) {
+        let albumList = await dbController.get_all_album()
+
+        if (albumList) {
+            res.render('albums', {
+                title: 'Browse Albums | Mue',
+                isLogin: req.login,
+                albumList: albumList,
             })
         } else {
             res.res(500).end()

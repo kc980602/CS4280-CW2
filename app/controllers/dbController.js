@@ -187,9 +187,9 @@ const dbController = new class {
                 }
 
                 const sql = `SELECT *
-                                    FROM \`album\`
-                                    WHERE id = ? AND
-                                        id in (
+                                FROM \`album\`
+                                WHERE id = ? AND
+                                    id in (
                                         SELECT oi.album_id
                                         FROM \`order_item\` oi, \`order\` o
                                         WHERE oi.order_id = o.id AND
@@ -205,6 +205,44 @@ const dbController = new class {
 
                     if (rows.length >= 1) {
                         resolve(true)
+                        return
+                    }
+                    resolve(false)
+                });
+                connection.on('error', (err) => {
+                    resolve(null)
+                });
+            });
+        })
+    }
+    get_all_album() {
+        return new Promise(async (resolve) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    connection.release();
+                    resolve(null)
+                    return
+                }
+
+                const sql = `SELECT *
+                                FROM \`album\``
+
+                connection.query(sql, (err, rows) => {
+                    connection.release();
+                    if (err) {
+                        resolve(null)
+                        return
+                    }
+
+                    if (rows.length >= 1) {
+                        let result = []
+
+                        for(let row of rows){
+                            let album = new Album(...Object.values(row))
+
+                            result.push(album)
+                        }
+                        resolve(result)
                         return
                     }
                     resolve(false)
