@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include ../app/head.ejs %>
+</head>
+<body>
+<!-- ##### Header Area Start ##### -->
+<% include ./header.ejs %>
+<!-- ##### Header Area End ##### -->
+
+<!-- ##### Breadcumb Area Start ##### -->
+<section class="breadcumb-area bg-img bg-overlay" style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
+    <div class="bradcumbContent">
+        <h2>Product List</h2>
+    </div>
+</section>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### Product List Area Start ##### -->
+<section class="cart-area padding-y-20 padding-y-md-50">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-12 col-md-6 section-heading text-left mb-50 wow fadeInUp" data-wow-delay="50ms">
+                <!--<p>See what’s here</p>-->
+                <!--<h2>10 Albums In Cart</h2>-->
+            </div>
+
+            <div class="col-12 col-md-6 section-heading text-left mb-50 wow fadeInUp" data-wow-delay="50ms">
+                <div class="d-flex align-items-center float-right">
+                    <!--<h1 class="mb-0 mr-2"><span class="font-weight-normal">Total: </span>$689</h1>-->
+                    <a href="/admin/product/add" class="btn oneMusic-btn btn-2 m-2">Add Album</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Product List Area End ##### -->
+
+
+<% include ../app/footer.ejs %>
+</body>
+</html>
