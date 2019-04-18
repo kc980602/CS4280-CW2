@@ -3,14 +3,14 @@ const check = function (req, params, bodys) {
     const missedP= []
     const missedB = []
 
-    for (const i in params) {
-        if (!req.query.hasOwnProperty(params[i]) || req.query[bodys[i]] === '') {
-            missedP.push(params[i])
+    for (const item of params) {
+        if (!req.query.hasOwnProperty(item) || req.query[item] === '') {
+            missedP.push(item)
         }
     }
-    for (const i in bodys) {
-        if (!req.body.hasOwnProperty(bodys[i])) {
-            missedB.push(bodys[i])
+    for (const item of bodys) {
+        if (!req.body.hasOwnProperty(item) || req.body[item] === '') {
+            missedB.push(item)
         }
     }
 

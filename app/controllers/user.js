@@ -1,70 +1,82 @@
 const dbController = require('./dbController')
 const User = require('../models/user')
 const check = require('../../utils/checkQuery');
-const user = new class {
-    async login(req, res) {
-        if (check(req, [], ['username', 'password'])) {
-            res.status(301).redirect('/login?err=true');
+const mysql = require('../../mysql/utils')
+
+async function getUserById(id) {
+    const result = await mysql.query( `SELECT * FROM user WHERE id = ? AND status = 0`, id)
+    if (result.length === 1) {
+        return new User(...Object.values(result[0]))
+    } else {
+        return false
+    }
+}
+
+async function getUserByName(name) {
+    const result = await mysql.query( `SELECT * FROM user WHERE username = ? AND status = 0`, name)
+    if (result.length === 1) {
+        return new User(...Object.values(result[0]))
+    } else {
+        return false
+    }
+}
+
+async function validateUsername(username) {
+    const result = await mysql.query( `SELECT * FROM user WHERE username = ?`, username)
+    return result.length === 0
+}
+
+async function login(req, res) {
+    if (check(req, [], ['username', 'password']))
+        return {code: 400, message: 'Missing username or password.'}
+
+    const user = await getUserByName(req.body.username)
+
+    if (user) {
+        if (user.validPassword(req.body.password)) {
+            req.session.user = user
+            return user
+        } else {
+            return {code: 400, message: 'Incorrect username or password.'}
         }
+    } else {
+        return {code: 400, message: 'User not found.'}
+    }
+}
 
-        let username = req.body.username;
-        let password = req.body.password;
-        let user = await dbController.get_user_by_username(username)
+async function register(req, res) {
+    if (check(req, [], ['username', 'password']))
+        return {code: 400, message: 'Missing username or password.'}
 
+    const tmpUser = new User()
+    tmpUser.username = req.body.username
+    tmpUser.password = req.body.password
+
+    if (!await validateUsername(tmpUser.username)){
+        return {code: 400, message: 'Username is used.'}
+    }
+
+    const result = await mysql.query(`INSERT INTO user(\`username\`, \`password\`) VALUES(?, ?)`, [tmpUser.username, tmpUser.password])
+
+    if (result.affectedRows === 1) {
+        const user = await getUserById(result.insertId)
         if (user) {
-            if (user.validPassword(password)) {
-                req.session.user = user;
-                res.status(301).redirect('/');
-            } else {
-                res.status(301).render('login', {
-                    title: 'Login | Mue',
-                    err: true,
-                    reason: 'Incorrect password.'
-                });
-            }
+            req.session.user = user;
+            return user
         } else {
-            res.status(400).render('login', {
-                title: 'Login | Mue',
-                err: true,
-                reason: 'User not found.'
-            });
+            return {code: 400, message: 'Fail to create user.'}
         }
     }
-    async signup(req, res) {
-        if (!req.body.username || !req.body.password) {
-            res.status(400).render('register', {
-                title: 'Register | Mue',
-                err: true,
-                reson: 'Missing username or password.'
-            })
-            return
-        }
-
-        let user = new User()
-        user.username = req.body.username
-        user.password = req.body.password
-        let createdUser = await dbController.create_user(user)
-
-        console.log(createdUser)
-        if (createdUser) {
-            req.session.user = createdUser;
-            res.status(201).redirect('/')
-        } else {
-            res.status(500).render('register', {
-                title: 'Register | Mue',
-                err: true,
-                reason: 'Failed to create user.'
-            });
-        }
+}
+async function logout(req, res) {
+    if (req.session.user && req.cookies.user_sid) {
+        res.clearCookie('user_sid');
+        return true
     }
-    logout(req, res) {
-        if (req.session.user && req.cookies.user_sid) {
-            res.clearCookie('user_sid');
-            res.redirect('/');
-        } else {
-            res.redirect('/login');
-        }
-    }
-}()
+}
 
-module.exports = user
+module.exports = {
+    login,
+    register,
+    logout
+}

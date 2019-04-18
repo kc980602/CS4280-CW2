@@ -1,34 +1,48 @@
 const express = require('express');
 const router = express.Router();
-const AuthController = require('../controllers/user');
+const userController = require('../controllers/user');
 const ProfileController = require('../controllers/profile');
 const ProtectedRoute = require('../middlewares/ProtectedRoute')
 
-router.route('/login').get((req, res) => {
-    res.render('login', {
-        title: 'Login | Mue',
-        isLogin: req.login,
+router.route('/login')
+    .get(async (req, res) => {
+        res.render('login', {title: 'Login | Mue', isLogin: req.login})
+        res.end();
+    })
+    .post(async (req, res) => {
+        const base = {title: 'Login | Mue', isLogin: req.login}
+        const json = await userController.login(req, res)
+        if (json.code) {
+            res.render('login', Object.assign(base, json))
+            res.end()
+        } else {
+            res.status(302).redirect('/')
+        }
     });
-    res.end();
-}).post((req, res) => {
-    AuthController.login(req, res)
-});
 
-router.route('/register').get((req, res) => {
-    res.render('register', {
-        title: 'Register | Mue',
-        isLogin: req.login,
+router.route('/register')
+    .get(async (req, res) => {
+        res.render('register', {title: 'Register | Mue', isLogin: req.login})
+        res.end()
+    })
+    .post(async (req, res) => {
+        const base = {title: 'Register | Mue', isLogin: req.login}
+        const json = await userController.register(req, res)
+        if (json.code) {
+            res.render('register', Object.assign(base, json))
+            res.end()
+        } else {
+            res.status(302).redirect('/')
+        }
     });
-    res.end();
-}).post((req, res) => {
-    AuthController.signup(req, res)
-});
 
-router.route('/logout').get((req, res) => {
-    AuthController.logout(req, res)
-});
 
-router.route('/profile').get(ProtectedRoute, (req, res) => {
+router.get('/logout', async (req, res, next) => {
+    await userController.logout(req, res)
+    res.status(302).redirect('/')
+})
+
+router.get('/profile', ProtectedRoute, async (req, res, next) => {
     res.redirect('/profile/collection')
 })
 

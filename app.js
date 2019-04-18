@@ -1,19 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var bodyParser = require('body-parser');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var logger = require('morgan');
-var LoginChecker = require('./app/middlewares/LoginChecker')
+const createError = require('http-errors');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const logger = require('morgan');
+const LoginChecker = require('./app/middlewares/LoginChecker')
 
-var indexRouter = require('./app/routes/index');
-var userRouter = require('./app/routes/user');
-var albumRouter = require('./app/routes/album');
-var shopRouter = require('./app/routes/shop');
-var adminRouter = require('./app/routes/admin');
+const indexRouter = require('./app/routes/index');
+const userRouter = require('./app/routes/user');
+const albumRouter = require('./app/routes/album');
+const shopRouter = require('./app/routes/shop');
+const adminRouter = require('./app/routes/admin');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, '/app/views'));
