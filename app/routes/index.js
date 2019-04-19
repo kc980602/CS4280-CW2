@@ -4,8 +4,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {
-        title: 'Online Music Store | Mue',
-        isLogin: req.login,
+        title: 'Online Music Store | Mue', isLogin: req.login
     });
 });
 

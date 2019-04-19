@@ -38,7 +38,9 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(LoginChecker);
+
+app.use(LoginChecker)
+// app.locals.isLogin = LoginChecker
 app.use('/', indexRouter);
 app.use('/', userRouter);
 app.use('/', albumRouter);

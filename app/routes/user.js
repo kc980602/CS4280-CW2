@@ -18,7 +18,7 @@ router.route('/login')
         } else {
             res.status(302).redirect('/')
         }
-    });
+    })
 
 router.route('/register')
     .get(async (req, res) => {
@@ -34,7 +34,7 @@ router.route('/register')
         } else {
             res.status(302).redirect('/')
         }
-    });
+    })
 
 
 router.get('/logout', async (req, res, next) => {
