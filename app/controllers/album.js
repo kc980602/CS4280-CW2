@@ -1,4 +1,10 @@
 const dbController = require('./dbController')
+const check = require('../../utils/checkQuery');
+const mysql = require('../../mysql/utils')
+
+async function get_all_album(){
+    
+}
 
 async function addAlbum(req, res) {
     let albumId = req.query.id
