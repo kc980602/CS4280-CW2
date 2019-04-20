@@ -14,7 +14,6 @@ router.get('/product', (req, res, next) => {
         title: 'Browse Albums | Mue',
         isLogin: req.login,
     })
-
 })
 
 router.get('/product/add', (req, res, next) => {
@@ -22,7 +21,7 @@ router.get('/product/add', (req, res, next) => {
 })
 
 router.post('/product/add', (req, res, next) => {
-    res.render('admin/product-add', {title: 'Browse Albums | Mue', isLogin: req.login})
+
 })
 
 router.get('/product/add', (req, res, next) => {

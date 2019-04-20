@@ -17,22 +17,17 @@ function query(query, fields) {
                         case 'ECONNREFUSED':
                             console.error('Database connection was refused.')
                         default:
-                            console.error(err);
+                            console.error(err)
                     }
-                    connection.release();
-
-                    resolve(null);
+                    connection.release()
+                    resolve(null)
                 }
-
                 connection.query(query, fields, function (err, results) {
-                    connection.release();
-
-                    if (err) {
-                        resolve(null);
-                    }
-
-                    resolve(results);
-                });
+                    connection.release()
+                    if (err)
+                        resolve(null)
+                    resolve(results)
+                })
             })
         } catch (err) {
             throw new Error(err)

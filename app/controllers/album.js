@@ -29,6 +29,11 @@ async function addAlbum(req, res) {
     }
 }
 
+
+async function getAlbums(req, res){
+    
+}
+
 async function view_album(req, res) {
     let albumId = req.query.id
     let album = await dbController.get_album_by_album_id(albumId)
