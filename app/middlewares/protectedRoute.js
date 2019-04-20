@@ -1,4 +1,4 @@
-const ProtectedRoute = (req, res, next) => {
+const protectedRoute = (req, res, next) => {
     if (req.session.user && req.cookies.user_sid) {
         next()
     } else {
@@ -6,4 +6,4 @@ const ProtectedRoute = (req, res, next) => {
     }
 }
 
-module.exports = ProtectedRoute
+module.exports = protectedRoute
