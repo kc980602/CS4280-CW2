@@ -46,7 +46,7 @@ const Album = class {
 
     getTotalPrice(tracks) {
         let total = 0
-        if (track.length !== 0)
+        if (tracks.length !== 0)
             for (const item of tracks)
                 total += item.price
         return total
