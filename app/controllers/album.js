@@ -4,6 +4,7 @@ const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
 const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
+const moment = require('moment');
 
 album = new Album()
 
@@ -36,13 +37,24 @@ async function addAlbum(req, res) {
 
 module.exports = class AlbumController {
     async browseAlbums(req, res, next) {
-        const albums = await album.getAlbums(toNumber(req.query.page, 0))
-        if (albums.length === 0) res.status(302).redirect('/browse/albums')
+        const albumList = await album.getAlbums(toNumber(req.query.page, 0))
+        if (albumList.length === 0) res.status(302).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
-            albums: albums,
+            albums: albumList,
             curr: req.query.page,
-            total: await album.getAlbumsCount()
+            total: Math.round(await album.getAlbumsCount() / 12)
+        })
+    }
+
+    async browseAlbum(req, res, next) {
+        const data = await album.getAlbum(toNumber(req.params.id, 0))
+        if (!data) res.status(404).redirect('/error')
+        res.render('album', {
+            title: 'Browse Album | Mue',
+            album: data,
+            totalPrice: album.getTotalPrice(data.tracks),
+            moment: moment
         })
     }
 }

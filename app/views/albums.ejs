@@ -36,7 +36,7 @@
 
                             <% for(item of albums) { %>
                                 <div class="col-6 col-md-3">
-                                    <a href="/album/123" class="single-album-area">
+                                    <a href="/album/<%= item.id %>" class="single-album-area">
                                         <div class="album-thumb">
                                             <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
                                             <div class="album-price">
