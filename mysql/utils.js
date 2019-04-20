@@ -25,11 +25,10 @@ function query(sql, fields) {
                         case 'ECONNREFUSED':
                             console.error('Database connection was refused.')
                         default:
-                            console.error(err);
+                            console.error(err)
                     }
-                    connection.release();
-
-                    resolve(null);
+                    connection.release()
+                    resolve(null)
                 }
 
                 connection.query(sql, fields, function (err, results) {

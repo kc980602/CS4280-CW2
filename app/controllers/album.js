@@ -1,6 +1,9 @@
 const Album = require('../models/album')
 const dbController = require('./dbController')
-const check = require('../../utils/checkQuery');
+const Album = require('../models/album')
+const check = require('../../utils/checkQuery')
+const toNumber = require('../../utils/toNumber')
+const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
 const genUID = require('../../utils/genUID');
 const path = require('path');
@@ -20,6 +23,8 @@ async function insertAlbum(album) {
     } else {
         return false;
     }
+async function get_all_album() {
+
 }
 
 async function addAlbum(req, res) {
@@ -69,6 +74,12 @@ async function addAlbum(req, res) {
     });
 }
 
+async function getAlbums(req, res) {
+    const page = toNumber(req.query.page, 0)
+    const result = await mysql.query(`SELECT * FROM album WHERE status = 0 LIMIT ?, 12`, page * 12)
+    return toInstanceForceArray(new Album(), result)
+}
+
 async function view_album(req, res) {
     let albumId = req.query.id
     let album = await dbController.get_album_by_album_id(albumId)
@@ -108,6 +119,7 @@ async function view_all_album(req, res) {
 
 module.exports = {
     addAlbum,
+    getAlbums,
     view_album,
     view_all_album
 }

@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const AlbumController = require('../controllers/album');
+const albumController = require('../controllers/album');
 
-router.get('/browse/albums', (req, res) => {
+router.get('/browse/albums', async (req, res) => {
+    const albums = await albumController.getAlbums(req, res)
+    if (albums.length === 0) res.status(302).redirect('/browse/albums')
     res.render('albums', {
         title: 'Browse Album | Mue',
-        isLogin: req.login,
+        albums: albums
     })
-    // AlbumController.view_all_album(req, res)
-});
+})
 
 router.get('/album/:id', (req, res) => {
     // AlbumController.view_album(req,res)
@@ -16,6 +17,6 @@ router.get('/album/:id', (req, res) => {
         title: 'A Album | Mue',
         isLogin: req.login,
     })
-});
+})
 
 module.exports = router;
