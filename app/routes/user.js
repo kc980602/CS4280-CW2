@@ -12,13 +12,13 @@ router.get('/login', notLoginRoute, (req, res, next) => {
     res.render('login', {title: 'Login | Mue', isLogin: req.login})
 })
 
-router.post('/login', userController.login)
+router.post('/login', notLoginRoute, userController.login)
 
 router.get('/register', notLoginRoute, (req, res, next) => {
     res.render('register', {title: 'Register | Mue', isLogin: req.login})
 })
 
-router.post('/register', userController.register)
+router.post('/register', notLoginRoute, userController.register)
 
 //  Protected route
 router.use('/', protectedRoute, (req, res, next) => {

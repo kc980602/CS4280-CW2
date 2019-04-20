@@ -87,7 +87,7 @@ module.exports = class AlbumController {
 
     async browseAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
-        const albumList = await album.getAlbums(page-1)
+        const albumList = await album.getAlbums(page-1, false)
         if (albumList.length === 0) res.status(302).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
@@ -97,6 +97,20 @@ module.exports = class AlbumController {
             pathPrefix: '/browse/albums?page='
         })
     }
+
+    async browseAdminAlbums(req, res, next) {
+        const page = toNumber(req.query.page, 1)
+        const albumList = await album.getAlbums(page-1, true)
+        if (albumList.length === 0) res.status(302).redirect('/browse/albums')
+        res.render('albums', {
+            title: 'Browse Album | Mue',
+            albums: albumList,
+            curr: page,
+            total: Math.ceil(await album.getAlbumsCount() / 12),
+            pathPrefix: '/browse/albums?page='
+        })
+    }
+
 
     async browseAlbum(req, res, next) {
         const data = await album.getAlbum(toNumber(req.params.id, 0))
