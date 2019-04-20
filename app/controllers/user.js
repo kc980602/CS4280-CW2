@@ -4,7 +4,7 @@ const mysql = require('../../mysql/utils')
 
 userModel = new User()
 
-module.exports = class UserController {
+module.exports = new class {
     async register(req, res, next) {
         const base = {title: 'Register | Mue', isLogin: req.login}
         if (check(req, [], ['username', 'password']))
@@ -54,4 +54,4 @@ module.exports = class UserController {
             res.status(302).redirect('/')
         }
     }
-}
+}()

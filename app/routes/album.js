@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const AlbumController = require('../controllers/album')
+const albumController = require('../controllers/album')
 const protectedRoute = require('../middlewares/protectedRoute')
 
 router.get('/browse/albums', albumController.browseAlbums)
 
 router.get('/album/:id', albumController.browseAlbum)
+
+router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
 router.get('/cart', protectedRoute, (req, res, next) => {
     res.render('cart', {
@@ -21,7 +23,5 @@ router.get('/checkout', protectedRoute, (req, res, next) => {
     })
 })
 
-
-router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
 module.exports = router;
