@@ -112,10 +112,3 @@ module.exports = class AlbumController {
         })
     }
 }
-
-module.exports = {
-    addAlbum,
-    getAlbums,
-    view_album,
-    view_all_album
-}
