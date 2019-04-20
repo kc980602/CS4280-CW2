@@ -1,10 +1,18 @@
 const pool = require('./mysql')
 
-async function insert() {
-    
+async function insert(sql, fields) {
+    return query(sql, fields).then((results) => {
+
+        if (results) {
+            if (results.affectedRows === 0) {
+                return Promise.resolve(null);
+            }
+        }
+        return Promise.resolve(results);
+    });
 }
 
-function query(query, fields) {
+function query(sql, fields) {
     return new Promise((resolve) => {
         try {
             pool.getConnection((err, connection) => {
@@ -24,10 +32,12 @@ function query(query, fields) {
                     resolve(null);
                 }
 
-                connection.query(query, fields, function (err, results) {
+                connection.query(sql, fields, function (err, results) {
                     connection.release();
 
                     if (err) {
+                        console.error(err);
+
                         resolve(null);
                     }
 
@@ -41,5 +51,6 @@ function query(query, fields) {
 }
 
 module.exports = {
+    insert,
     query
 }
