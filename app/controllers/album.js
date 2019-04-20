@@ -1,9 +1,11 @@
 const Album = require('../models/album')
 const dbController = require('./dbController')
-const Album = require('../models/album')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
-const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
+const {
+    toInstanceForce,
+    toInstanceForceArray
+} = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
 const genUID = require('../../utils/genUID');
 const path = require('path');
@@ -18,13 +20,11 @@ async function insertAlbum(album) {
     console.log(result)
     if (result) {
         album.id = result.insertId;
-        
+
         return album;
     } else {
         return false;
     }
-async function get_all_album() {
-
 }
 
 async function addAlbum(req, res) {
@@ -46,22 +46,34 @@ async function addAlbum(req, res) {
             })
         }
 
-        let thumbnailPath = path.resolve('./storage/thumbnail', genUID() + path.extname(files.thumbnail.name));
-        let album = new Album(null, thumbnailPath, fields.title, fields.artist, fields.label);
+        let thumbnailName = genUID() + path.extname(files.thumbnail.name);
+        let thumbnailPath = path.resolve('./storage/thumbnail', thumbnailName);
+        let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label);
         let result = await insertAlbum(album);
 
         if (result) {
-            console.log(result)
-            fs.writeFile(path.resolve(storagePath, thumbnailPath), files.thumbnail, (err) => {
-                if (!err) {
-                    res.status(302).redirect('/admin/product');
-                } else {
-                    res.render('admin/product-add', {
+            console.log(files)
+
+            fs.readFile(files.thumbnail.path, function (err, data) {
+                if (err) {
+                    return res.render('admin/product-add', {
                         title: 'Add Albums | Mue',
                         code: 500,
                         message: 'Add album fail, please try again later.'
                     })
                 }
+
+                fs.writeFile(path.resolve(storagePath, thumbnailPath), data, function (err) {
+                    if (err) {
+                        return res.render('admin/product-add', {
+                            title: 'Add Albums | Mue',
+                            code: 500,
+                            message: 'Add album fail, please try again later.'
+                        })
+                    }
+
+                    return res.status(302).redirect('/admin/product');
+                });
             });
         } else {
             console.log(3)
