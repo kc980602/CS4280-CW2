@@ -56,6 +56,10 @@ const User = class {
         return false
     }
 
+    async isAdmin(id){
+        const user = await this.getUserById(id)
+        return user.role === 'ADMIN'
+    }
 
 }
 
