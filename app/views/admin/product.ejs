@@ -33,6 +33,34 @@
                 </div>
 
             </div>
+
+            
+            <% for(var i = 0; i < 10; i++) { %>
+                <!-- A Album Item -->
+                <div class="col-12 mb-3">
+                    <div class="new-hits-area padding-30">
+                        <div class="single-new-item align-items-center wow fadeInUp" data-wow-delay="100ms">
+                            <div class="d-flex justify-content-between">
+                                <div class="first-part d-flex align-items-center">
+                                    <div class="thumbnail">
+                                        <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
+                                    </div>
+                                    <div class="content-">
+                                        <h6>Underground</h6>
+                                        <p>Sam Smith</p>
+                                        <p>12 Songs</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-size-20 font-weight-bold">$0.90</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            <% } %>
+        </div>
         </div>
     </div>
 </section>
