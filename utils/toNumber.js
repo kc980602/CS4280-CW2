@@ -3,6 +3,7 @@ function toNumber(data, defaultNum = 0){
     if(isNaN(num)){
         num = defaultNum
     }
+    console.log('num', num)
     return num
 }
 module.exports = toNumber

@@ -79,13 +79,15 @@ async function addAlbum(req, res) {
 
 module.exports = class AlbumController {
     async browseAlbums(req, res, next) {
-        const albumList = await album.getAlbums(toNumber(req.query.page, 0))
+        const page = toNumber(req.query.page, 1)
+        const albumList = await album.getAlbums(page-1)
         if (albumList.length === 0) res.status(302).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
             albums: albumList,
-            curr: req.query.page,
-            total: Math.round(await album.getAlbumsCount() / 12)
+            curr: page,
+            total: Math.ceil(await album.getAlbumsCount() / 12),
+            pathPrefix: '/browse/albums?page='
         })
     }
 
