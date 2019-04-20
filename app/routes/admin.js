@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const albumController = require('../controllers/album')
 
+
 router.get('/', (req, res) => {
     res.render('admin/index', {
         title: 'Browse Albums | Mue',
@@ -45,3 +46,10 @@ router.get('/product/refund', (req, res) => {
 
 
 module.exports = router;
+
+// function isAdmin(req, res, next) {
+//     if () {
+//         return  next()
+//     }
+//     res.redirect('/')
+// }
