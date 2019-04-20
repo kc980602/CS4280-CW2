@@ -101,13 +101,13 @@ module.exports = new class {
     async browseAdminAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
         const albumList = await album.getAlbums(page-1, true)
-        if (albumList.length === 0) res.status(302).redirect('/browse/albums')
-        res.render('albums', {
+        if (albumList.length === 0) res.status(302).redirect('/admin/product')
+        res.render('admin/product', {
             title: 'Browse Album | Mue',
             albums: albumList,
             curr: page,
             total: Math.ceil(await album.getAlbumsCount() / 12),
-            pathPrefix: '/browse/albums?page='
+            pathPrefix: '/admin/product?page='
         })
     }
 
