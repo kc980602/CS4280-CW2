@@ -24,7 +24,7 @@
                 <div class="text-center">
                     <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" width="100%" alt="">
                     <div class="mt-4">
-                        <span class="font-size-20">Full Album: </span><span class="font-size-30 font-weight-bold">$12</span>
+                        <span class="font-size-20">Full Album: </span><span class="font-size-30 font-weight-bold">$<%=totalPrice%></span>
                     </div>
                     <a href="#" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Add To Cart</a>
                 </div>
@@ -32,9 +32,9 @@
 
             <div class="col-12 col-md-8">
 
-                <h1 class="mb-0">The Ones That Like Me</h1>
-                <p class="font-size-16 mb-0">By Buble Gum</p>
-                <p class="font-size-16 text-secondary">2016 • 34 Tracks </p>
+                <h1 class="mb-0"><%= album.title %></h1>
+                <p class="font-size-16 mb-0">By <%= album.artist %></p>
+                <p class="font-size-16 text-secondary"><%= album.getReleaseDateYear() %> • <%=album.tracks.length%> Tracks </p>
                 <table class="table table-cs mt-3 mb-0" width="100%">
                     <thead>
                     <tr style="height: 1px">
@@ -47,13 +47,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <% for(var j = 0; j < 5; j++) { %>
+
+                    <% for(item of album.tracks) { %>
                         <tr>
                             <td><i class="icon-music"></i></td>
-                            <td>Stars Stars Stars Stars</td>
-                            <td>Buble Gum</td>
-                            <td>2:34</td>
-                            <td>$9.99</td>
+                            <td><%= item.title %></td>
+                            <td><%= item.artist %></td>
+                            <td><%= moment.utc(item.length * 1000).format(item.length > 3600 ? 'hh:mm:ss' : 'mm:ss') %></td>
+                            <td>$<%=item.price%></td>
                             <td class="text-right">
                                 <button class="btn btn-dark btn-xs">Add</button>
                             </td>

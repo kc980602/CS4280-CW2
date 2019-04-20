@@ -1,5 +1,4 @@
 const Album = require('../models/album')
-const dbController = require('./dbController')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
 const {
@@ -7,12 +6,14 @@ const {
     toInstanceForceArray
 } = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
+const moment = require('moment');
 const genUID = require('../../utils/genUID');
 const path = require('path');
 const fs = require('fs');
 const formidable = require('formidable');
 const storagePath = path.resolve(path.dirname(__dirname), '..');
 
+album = new Album()
 
 async function insertAlbum(album) {
     const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label) VALUES(?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label]);
@@ -83,49 +84,30 @@ async function addAlbum(req, res) {
                 message: 'Add album fail, please try again later.'
             })
         }
-    });
+    })
 }
 
-async function getAlbums(req, res) {
-    const page = toNumber(req.query.page, 0)
-    const result = await mysql.query(`SELECT * FROM album WHERE status = 0 LIMIT ?, 12`, page * 12)
-    return toInstanceForceArray(new Album(), result)
-}
-
-async function view_album(req, res) {
-    let albumId = req.query.id
-    let album = await dbController.get_album_by_album_id(albumId)
-    let hasPurchased = false
-
-    if (req.login) {
-        let user = req.session.user
-
-        hasPurchased = await dbController.check_album_has_purchased(albumId, user.id)
+module.exports = class AlbumController {
+    async browseAlbums(req, res, next) {
+        const albumList = await album.getAlbums(toNumber(req.query.page, 0))
+        if (albumList.length === 0) res.status(302).redirect('/browse/albums')
+        res.render('albums', {
+            title: 'Browse Album | Mue',
+            albums: albumList,
+            curr: req.query.page,
+            total: Math.round(await album.getAlbumsCount() / 12)
+        })
     }
 
-    if (album) {
+    async browseAlbum(req, res, next) {
+        const data = await album.getAlbum(toNumber(req.params.id, 0))
+        if (!data) res.status(404).redirect('/error')
         res.render('album', {
             title: 'Browse Album | Mue',
-            isLogin: req.login,
-            album: album,
-            hasPurchased: hasPurchased
+            album: data,
+            totalPrice: album.getTotalPrice(data.tracks),
+            moment: moment
         })
-    } else {
-        res.status(500).end()
-    }
-}
-
-async function view_all_album(req, res) {
-    let albumList = await dbController.get_all_album()
-
-    if (albumList) {
-        res.render('albums', {
-            title: 'Browse Albums | Mue',
-            isLogin: req.login,
-            albumList: albumList,
-        })
-    } else {
-        res.status(500).end()
     }
 }
 

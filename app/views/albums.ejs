@@ -36,7 +36,7 @@
 
                             <% for(item of albums) { %>
                                 <div class="col-6 col-md-3">
-                                    <a href="/album/123" class="single-album-area">
+                                    <a href="/album/<%= item.id %>" class="single-album-area">
                                         <div class="album-thumb">
                                             <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
                                             <div class="album-price">
@@ -55,15 +55,7 @@
                 </section>
 
                 <!-- Pagination -->
-                <div class="oneMusic-pagination-area wow fadeInUp" data-wow-delay="300ms">
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        </ul>
-                    </nav>
-                </div>
+                <% include ./app/pagination.ejs %>
             </div>
 
         </div>
