@@ -1,10 +1,7 @@
 const Album = require('../models/album')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
-const {
-    toInstanceForce,
-    toInstanceForceArray
-} = require('../../utils/serializer')
+const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
 const moment = require('moment');
 const genUID = require('../../utils/genUID');

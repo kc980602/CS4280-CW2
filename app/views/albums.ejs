@@ -38,7 +38,7 @@
                                 <div class="col-6 col-md-3">
                                     <a href="/album/<%= item.id %>" class="single-album-area">
                                         <div class="album-thumb">
-                                            <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
+                                            <img src="<%= `/album/thumbnail/${item.thumbnail}` %>" alt="">
                                             <div class="album-price">
                                                 <p><%=item.label%></p>
                                             </div>
