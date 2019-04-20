@@ -34,7 +34,7 @@
                     <div class="container">
                         <div class="row">
 
-                            <% for(var i = 0; i < 10; i++) { %>
+                            <% for(item of albums) { %>
                                 <div class="col-6 col-md-3">
                                     <a href="/album/123" class="single-album-area">
                                         <div class="album-thumb">
@@ -44,8 +44,8 @@
                                             </div>
                                         </div>
                                         <div class="album-info">
-                                            <h5>Noises</h5>
-                                            <p>Buble Gum</p>
+                                            <h5><%= item.title %></h5>
+                                            <p><%= item.artist %></p>
                                         </div>
                                     </a>
                                 </div>
