@@ -1,4 +1,3 @@
-const dbController = require('./dbController')
 const User = require('../models/user')
 const check = require('../../utils/checkQuery');
 const mysql = require('../../mysql/utils')
