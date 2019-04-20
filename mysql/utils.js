@@ -1,7 +1,7 @@
 const pool = require('./mysql')
 
 async function insert() {
-
+    
 }
 
 function query(query, fields) {
