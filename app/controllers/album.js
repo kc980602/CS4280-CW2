@@ -15,56 +15,48 @@ const storagePath = path.resolve(path.dirname(__dirname), '..');
 
 album = new Album()
 
-async function insertAlbum(album) {
-    const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label) VALUES(?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label]);
+module.exports = class AlbumController {
+    async insertAlbum(album) {
+        const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label) VALUES(?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label]);
 
-    console.log(result)
-    if (result) {
-        album.id = result.insertId;
-
-        return album;
-    } else {
-        return false;
-    }
-}
-
-async function addAlbum(req, res) {
-    let form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
-        if (err) {
-            return res.render('/admin/product/add', {
-                title: 'Add Albums | Mue',
-                code: 303,
-                message: 'Internal Server Error.'
-            });
-        }
-
-        if (!fields.title || !fields.artist || !fields.label || !files.thumbnail) {
-            return res.render('/admin/product/add', {
-                title: 'Add Albums | Mue',
-                code: 400,
-                message: 'Missing parameters.'
-            })
-        }
-
-        let thumbnailName = genUID() + path.extname(files.thumbnail.name);
-        let thumbnailPath = path.resolve('./storage/thumbnail', thumbnailName);
-        let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label);
-        let result = await insertAlbum(album);
-
+        console.log(result)
         if (result) {
-            console.log(files)
+            album.id = result.insertId;
 
-            fs.readFile(files.thumbnail.path, function (err, data) {
-                if (err) {
-                    return res.render('admin/product-add', {
-                        title: 'Add Albums | Mue',
-                        code: 500,
-                        message: 'Add album fail, please try again later.'
-                    })
-                }
+            return album;
+        } else {
+            return false;
+        }
+    }
 
-                fs.writeFile(path.resolve(storagePath, thumbnailPath), data, function (err) {
+    async addAlbum(req, res) {
+        let form = new formidable.IncomingForm();
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                return res.render('/admin/product/add', {
+                    title: 'Add Albums | Mue',
+                    code: 303,
+                    message: 'Internal Server Error.'
+                });
+            }
+
+            if (!fields.title || !fields.artist || !fields.label || !files.thumbnail) {
+                return res.render('/admin/product/add', {
+                    title: 'Add Albums | Mue',
+                    code: 400,
+                    message: 'Missing parameters.'
+                })
+            }
+
+            let thumbnailName = genUID() + path.extname(files.thumbnail.name);
+            let thumbnailPath = path.resolve('./storage/thumbnail', thumbnailName);
+            let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label);
+            let result = await insertAlbum(album);
+
+            if (result) {
+                console.log(files)
+
+                fs.readFile(files.thumbnail.path, function (err, data) {
                     if (err) {
                         return res.render('admin/product-add', {
                             title: 'Add Albums | Mue',
@@ -73,21 +65,29 @@ async function addAlbum(req, res) {
                         })
                     }
 
-                    return res.status(302).redirect('/admin/product');
-                });
-            });
-        } else {
-            console.log(3)
-            res.render('admin/product-add', {
-                title: 'Add Albums | Mue',
-                code: 500,
-                message: 'Add album fail, please try again later.'
-            })
-        }
-    })
-}
+                    fs.writeFile(path.resolve(storagePath, thumbnailPath), data, function (err) {
+                        if (err) {
+                            return res.render('admin/product-add', {
+                                title: 'Add Albums | Mue',
+                                code: 500,
+                                message: 'Add album fail, please try again later.'
+                            })
+                        }
 
-module.exports = class AlbumController {
+                        return res.status(302).redirect('/admin/product');
+                    });
+                });
+            } else {
+                console.log(3)
+                res.render('admin/product-add', {
+                    title: 'Add Albums | Mue',
+                    code: 500,
+                    message: 'Add album fail, please try again later.'
+                })
+            }
+        })
+    }
+
     async browseAlbums(req, res, next) {
         const albumList = await album.getAlbums(toNumber(req.query.page, 0))
         if (albumList.length === 0) res.status(302).redirect('/browse/albums')
@@ -109,11 +109,4 @@ module.exports = class AlbumController {
             moment: moment
         })
     }
-}
-
-module.exports = {
-    addAlbum,
-    getAlbums,
-    view_album,
-    view_all_album
 }
