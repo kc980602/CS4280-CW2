@@ -123,7 +123,7 @@ module.exports = new class {
         })
     }
 
-    async getAlbumThumbnail(req, res) {
+    async getAlbumThumbnail(req, res, next) {
         let thumbnailName = req.params.filename;
 
         if(!thumbnailName) {
@@ -132,4 +132,9 @@ module.exports = new class {
 
         return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName));
     }
+
+    async addToCart(req, res, next){
+
+    }
+
 }()

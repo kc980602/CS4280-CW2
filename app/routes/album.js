@@ -10,11 +10,10 @@ router.get('/album/:id', albumController.browseAlbum)
 router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
 router.get('/cart', protectedRoute, (req, res, next) => {
-    res.render('cart', {
-        title: 'Cart | Mue',
-        isLogin: req.login,
-    })
+    res.render('cart', {title: 'Cart | Mue', isLogin: req.login,})
 })
+
+router.post('/cart/:album/:track', albumController.getAlbumThumbnail)
 
 router.get('/checkout', protectedRoute, (req, res, next) => {
     res.render('checkout', {
