@@ -1,23 +1,87 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <% include ../app/head.ejs %>
 </head>
+
 <body>
-<!-- ##### Header Area Start ##### -->
-<% include ./header.ejs %>
-<!-- ##### Header Area End ##### -->
+    <!-- ##### Header Area Start ##### -->
+    <% include ./header.ejs %>
+    <!-- ##### Header Area End ##### -->
 
-<!-- ##### Breadcumb Area Start ##### -->
-<section class="breadcumb-area bg-img bg-overlay" style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
-    <div class="bradcumbContent">
-        <h2>Add Product</h2>
-    </div>
-</section>
-<!-- ##### Breadcumb Area End ##### -->
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img bg-overlay"
+        style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
+        <div class="bradcumbContent">
+            <h2>Add Product</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
 
+    <!-- ##### Add Album Form Start ##### -->
+    <section class="cart-area padding-y-20 padding-y-md-50">
+        <div class="container">
+            <div class="row d-flex justify-content-center text-center">
+                <div class="col-sm-9">
+                    <div class="row d-flex justify-content-center mb-5">
+                        <img class="img-thumbnail rounded w-25 h-25" style="display: none;" />
+                    </div>
+                    <form action="/admin/product/add" method="post" enctype="multipart/form-data">
+                        <div class="form-group row">
+                            <div class="custom-file">
+                                <label for="thumbnail" class="custom-file-label">Choose a thumbnail...</label>
+                                <div class="col-sm-10">
+                                    <input type="file" id="thumbnail" name="thumbnail" class="custom-file-input"
+                                        accept=".jpg, .png" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="title" class="col-sm-2 col-form-label">Title</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="title" name="title" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="artist" class="col-sm-2 col-form-label">Artist</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="artist" name="artist" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="label" class="col-sm-2 col-form-label">Label</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="label" name="label" class="form-control" required />
+                            </div>
+                        </div>
+                        <% include ../app/errMessage.ejs %>
+                        <button type="submit" class="btn oneMusic-btn btn-2 m-2">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Add Album Form End ##### -->
 
+    <% include ../app/footer.ejs %>
+    <script>
+        function previewThumbnail(event) {
+            let input = event.target;
 
-<% include ../app/footer.ejs %>
+            if (input.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function (event) {
+                    $('.img-thumbnail').attr('src', event.target.result);
+                    $('.img-thumbnail').show();
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $('#thumbnail').on('change', previewThumbnail);
+    </script>
 </body>
+
 </html>

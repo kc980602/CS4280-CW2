@@ -1,5 +1,6 @@
 function LoginChecker(req, res, next) {
-    res.locals.isLogin = req.session.user && req.cookies.user_sid;
+    req.login = req.session.user && req.cookies.user_sid;
+    res.locals.isLogin = req.login;
     next();
 }
 

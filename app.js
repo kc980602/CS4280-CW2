@@ -21,11 +21,8 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
-
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(session({
     key: 'user_sid',
@@ -37,7 +34,6 @@ app.use(session({
     }
 }));
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.use(LoginChecker)
 // app.locals.isLogin = LoginChecker
@@ -64,4 +60,3 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
-
