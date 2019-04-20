@@ -8,11 +8,12 @@ const genUID = require('../../utils/genUID');
 const path = require('path');
 const fs = require('fs');
 const formidable = require('formidable');
-const storagePath = path.resolve(path.dirname(__dirname), '..');
+const storagePath = path.resolve(path.dirname(__dirname), '../storage');
+const thumbnailStoragePath = path.resolve(storagePath, './thumbnail');
 
 album = new Album()
 
-module.exports = class AlbumController {
+module.exports = new class {
     async insertAlbum(album) {
         const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label) VALUES(?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label]);
 
@@ -46,9 +47,8 @@ module.exports = class AlbumController {
             }
 
             let thumbnailName = genUID() + path.extname(files.thumbnail.name);
-            let thumbnailPath = path.resolve('./storage/thumbnail', thumbnailName);
             let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label);
-            let result = await insertAlbum(album);
+            let result = await this.insertAlbum(album);
 
             if (result) {
                 console.log(files)
@@ -62,7 +62,7 @@ module.exports = class AlbumController {
                         })
                     }
 
-                    fs.writeFile(path.resolve(storagePath, thumbnailPath), data, function (err) {
+                    fs.writeFile(path.resolve(thumbnailStoragePath, thumbnailName), data, function (err) {
                         if (err) {
                             return res.render('admin/product-add', {
                                 title: 'Add Albums | Mue',
@@ -122,4 +122,14 @@ module.exports = class AlbumController {
             moment: moment
         })
     }
-}
+
+    async getAlbumThumbnail(req, res) {
+        let thumbnailName = req.params.filename;
+
+        if(!thumbnailName) {
+            return res.status(400).end();
+        }
+
+        return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName));
+    }
+}()

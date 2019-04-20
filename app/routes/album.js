@@ -3,8 +3,6 @@ const router = express.Router();
 const AlbumController = require('../controllers/album')
 const protectedRoute = require('../middlewares/protectedRoute')
 
-albumController = new AlbumController()
-
 router.get('/browse/albums', albumController.browseAlbums)
 
 router.get('/album/:id', albumController.browseAlbum)
@@ -23,5 +21,7 @@ router.get('/checkout', protectedRoute, (req, res, next) => {
     })
 })
 
+
+router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
 module.exports = router;
