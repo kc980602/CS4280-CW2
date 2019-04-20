@@ -1,6 +1,4 @@
 const Album = require('../models/album')
-const dbController = require('./dbController')
-const Album = require('../models/album')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
 const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
@@ -14,18 +12,20 @@ const storagePath = path.resolve(path.dirname(__dirname), '..');
 
 album = new Album()
 
-
 async function insertAlbum(album) {
     const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label) VALUES(?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label]);
 
     console.log(result)
     if (result) {
         album.id = result.insertId;
-        
+
         return album;
     } else {
         return false;
     }
+}
+
+
 async function get_all_album() {
 
 }
@@ -74,7 +74,7 @@ async function addAlbum(req, res) {
                 message: 'Add album fail, please try again later.'
             })
         }
-    });
+    })
 }
 
 module.exports = class AlbumController {
