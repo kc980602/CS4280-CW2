@@ -9,6 +9,10 @@ router.get('/album/:id', albumController.browseAlbum)
 
 router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
+router.get('/album/full/:full_filename', albumController.getFullTrack)
+
+router.get('/album/preview/:preview_filename', albumController.getTrackPreview)
+
 router.get('/cart', protectedRoute, albumController.getCartItems)
 
 router.get('/cart/:album/:track', protectedRoute, albumController.addToCart)
