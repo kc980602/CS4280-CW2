@@ -23,18 +23,18 @@
 
             <div class="col-12 col-md-6 section-heading text-left mb-50 wow fadeInUp" data-wow-delay="50ms">
                 <p>See what’s here</p>
-                <h2>10 Albums In Cart</h2>
+                <h2><%=albums.length%> Albums In Cart</h2>
             </div>
 
             <div class="col-12 col-md-6 section-heading text-left mb-50 wow fadeInUp" data-wow-delay="50ms">
                 <div class="d-flex align-items-center float-right">
-                    <h1 class="mb-0 mr-2"><span class="font-weight-normal">Total: </span>$689</h1>
+                    <h1 class="mb-0 mr-2"><span class="font-weight-normal">Total: </span>$<%=totalPrice%></h1>
                     <a href="/checkout" class="btn oneMusic-btn btn-2 m-2">Checkout</a>
                 </div>
 
             </div>
 
-            <% for(var i = 0; i < 10; i++) { %>
+            <% for(item of albums) { %>
                 <!-- A Album Item -->
                 <div class="col-12 mb-3">
                     <div class="new-hits-area padding-30">
@@ -42,16 +42,16 @@
                             <div class="d-flex justify-content-between">
                                 <div class="first-part d-flex align-items-center">
                                     <div class="thumbnail">
-                                        <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
+                                        <img src="<%= `/album/thumbnail/${item.thumbnail}` %>" alt="">
                                     </div>
                                     <div class="content-">
-                                        <h6>Underground</h6>
-                                        <p>Sam Smith</p>
-                                        <p>12 Songs</p>
+                                        <h6><%= item.title %></h6>
+                                        <p><%= item.artist %></p>
+                                        <p><%= item.tracks.length %> Songs</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <p class="font-size-20 font-weight-bold">$0.90</p>
+                                    <p class="font-size-20 font-weight-bold">$<%= item.price %></p>
                                 </div>
                             </div>
 
@@ -67,15 +67,15 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <% for(var j = 0; j < 5; j++) { %>
+                                <% for(track of item.tracks) { %>
                                     <tr>
                                         <td><i class="icon-music"></i></td>
-                                        <td>Stars Stars Stars Stars</td>
-                                        <td>Buble Gum</td>
-                                        <td>2:34</td>
-                                        <td>$9.99</td>
+                                        <td><%= track.title %></td>
+                                        <td><%= track.artist %></td>
+                                        <td><%= moment.utc(track.length * 1000).format(track.length > 3600 ? 'hh:mm:ss' : 'mm:ss') %></td>
+                                        <td>$<%= track.price %></td>
                                         <td class="text-right">
-                                            <button href="" class="btn btn-dark btn-xs">Remove</button>
+                                            <a href="<%= `/cart/${item.id}/${track.id}/delete`%>" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 11px">Remove</a>
                                         </td>
                                     </tr>
                                 <% } %>

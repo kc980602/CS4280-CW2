@@ -11,7 +11,9 @@ router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
 router.get('/cart', protectedRoute, albumController.getCartItems)
 
-router.get('/cart/:album/:track', albumController.addToCart)
+router.get('/cart/:album/:track', protectedRoute, albumController.addToCart)
+
+router.get('/cart/:album/:track/delete', protectedRoute, albumController.removeFromCart)
 
 router.get('/checkout', protectedRoute, (req, res, next) => {
     res.render('purchase/checkout', {

@@ -22,10 +22,9 @@ const Track = class {
     }
 
     async getTracksWithArray(ids) {
-        const result = await mysql.query(`SELECT * FROM track WHERE id IN ? AND status = 0`, ids)
+        const result = await mysql.query(`SELECT * FROM track WHERE id IN (${ids}) AND status = 0`)
         return toInstanceForceArray(new Track(), result)
     }
-
 }
 
 module.exports = Track;

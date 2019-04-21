@@ -49,7 +49,7 @@ module.exports = new class {
 
     async addAlbum(req, res) {
         let form = new formidable.IncomingForm();
-        
+
         form.parse(req, async (err, fields, files) => {
             if (err) {
                 return res.render('admin/product-add', {
@@ -212,10 +212,6 @@ module.exports = new class {
     }
 
     async addToCart(req, res, next){
-        if (!req.session.user) {
-            res.redirect('/login')
-        }
-
         const albumId = req.params.album
         const trackId = req.params.track
 
@@ -231,16 +227,43 @@ module.exports = new class {
         }
 
         for (const item of addTarget){
-            console.log(req.session.user.id, albumId, item)
             await cartModel.addItem(req.session.user.id, albumId, item)
         }
 
         res.render('purchase/addToCart', {title: 'Added To Cart | Mue', totalItem: addTarget.length})
-
     }
 
-    async getCartItems(req, res, next){
+    async removeFromCart(req, res, next){
+        const albumId = req.params.album
+        const trackId = req.params.track
 
+        const removeTarget = []
+
+        if (trackId === 'ALL') {
+            const tracks = await trackModel.getTracks(albumId)
+            for (const item of tracks) {
+                removeTarget.push(item.id)
+            }
+        } else {
+            removeTarget.push(trackId)
+        }
+
+        for (const item of removeTarget){
+            await cartModel.removeItem(req.session.user.id, albumId, item)
+        }
+
+        res.redirect('/cart')
+    }
+
+
+    async getCartItems(req, res, next){
+        const data = await cartModel.getItems(37)
+        res.render('purchase/cart', {
+            title: 'Cart | Mue',
+            albums: data.albumList,
+            totalPrice: data.totalPrice,
+            moment: moment
+        })
     }
 
 }()
