@@ -26,7 +26,7 @@
                     <div class="mt-4">
                         <span class="font-size-20">Full Album: </span><span class="font-size-30 font-weight-bold">$<%= totalPrice %></span>
                     </div>
-                    <a href="<%= `/cart/${album.id}/ALL`%>" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Add To Cart</a>
+                    <a href="<%= `/cart/${album.id}/ALL` %>" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Add To Cart</a>
                 </div>
             </div>
 
@@ -49,14 +49,23 @@
                     <tbody>
 
                     <% for(item of album.tracks) { %>
-                        <tr>
-                            <td><i class="icon-music"></i></td>
+                        <tr class=" align-items-center">
+                            <td>
+                                <div class="album-4280">
+                                    <div class="align-items-center justify-content-between wow fadeInUp">
+                                        <audio preload="auto" controls>
+                                            <source src="/audio/dummy-audio.mp3">
+                                        </audio>
+                                    </div>
+                                </div>
+                            </td>
                             <td><%= item.title %></td>
                             <td><%= item.artist %></td>
                             <td><%= moment.utc(item.length * 1000).format(item.length > 3600 ? 'hh:mm:ss' : 'mm:ss') %></td>
                             <td>$<%= item.price %></td>
                             <td class="text-right">
-                                <a href="<%= `/cart/${album.id}/${item.id}`%>" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 11px">Add</a>
+                                <a href="<%= `/cart/${album.id}/${item.id}` %>" class="btn btn-dark btn-xs font-weight-normal"
+                                   style="font-size: 12px">Add</a>
                             </td>
                         </tr>
                     <% } %>
