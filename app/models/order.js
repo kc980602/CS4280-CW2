@@ -1,8 +1,10 @@
 const mysql = require('../../mysql/utils')
 const {toInstanceForce} = require('../../utils/serializer')
+const Track = require('../models/track')
 const Cart = require('../models/cart')
 const User = require('../models/user')
 
+trackModel = new Track()
 cartModel = new Cart()
 userModel = new User()
 
@@ -28,6 +30,9 @@ const Order = class {
         if (result.affectedRows === order.order_item.length) {
             await cartModel.clearCart(order.user_id)
             if (point !== 0) await userModel.deductPoint(order.user_id, point)
+            for (const item of order.order_item) {
+                await trackModel.deductTrackQuantity(item.track_id)
+            }
             return true
         }
 
