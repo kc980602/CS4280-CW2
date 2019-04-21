@@ -11,6 +11,7 @@ const indexRouter = require('./app/routes/index')
 const userRouter = require('./app/routes/user')
 const albumRouter = require('./app/routes/album')
 const adminRouter = require('./app/routes/admin')
+const orderRouter = require('./app/routes/order')
 
 const app = express()
 
@@ -39,6 +40,7 @@ app.use(LoginChecker)
 app.use('/', indexRouter)
 app.use('/', userRouter)
 app.use('/', albumRouter)
+app.use('/', orderRouter)
 app.use('/admin', adminRouter)
 
 // catch 404 and forward to error handler

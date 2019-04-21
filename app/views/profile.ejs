@@ -89,16 +89,27 @@
                                         </thead>
                                         <tbody>
                                         <% for(var j = 0; j < 5; j++) { %>
-                                            <tr>
+                                            <tr class="order-item">
                                                 <td><i class="icon-music"></i></td>
                                                 <td>ABC Album</td>
                                                 <td>Stars Stars Stars Stars</td>
                                                 <td>Buble Gum</td>
                                                 <td>2:34</td>
                                                 <td>$9.99</td>
-                                                <td class="text-right"><button href="" class="btn btn-dark btn-xs">Refund</button></td>
+                                                <td class="text-right refund"><button href="" class="btn btn-dark btn-xs">Refund</button></td>
                                             </tr>
                                         <% } %>
+                                            <script>
+                                                window.onload = () => {
+                                                    $('.order-item').find('.refund').on('click.refund', (event) =>{
+                                                        let orderId = event.target.closest('.order-item').attr('data-id');
+
+                                                        axios.patch('/order', {refund: true, order_id: orderId}).then((res) => {
+                                                            window.location.reload();
+                                                        });
+                                                    });
+                                                }
+                                            </script>
                                         </tbody>
                                     </table>
                                 </div>
