@@ -23,19 +23,23 @@
 
             <div class="col-12 new-hits-area padding-30">
                 <div class="d-flex justify-content-between">
-                    <h1 class="mr-2"><span class="font-weight-normal">Total: </span>$689</h1>
-                    <h2><i class="far fa-gem"></i> 777 LP</h2>
+                    <h1 class="mr-2"><span class="font-weight-normal">Total: </span>$<%= totalPrice %></h1>
+                    <h2><i class="far fa-gem"></i> <%= point %> LP</h2>
                 </div>
 
                 <div class="contact-form-area">
                     <form action="/checkout" method="post">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="font-size-20"><i class="far fa-gem"></i> Loyalty points to use in this order. </label>
-                                    <input type="number" class="form-control text-dark" id="point" name="point" placeholder="LP Amount" max="777" value="0">
+
+                            <% if (point !== 0){ %>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="font-size-20"><i class="far fa-gem"></i> Loyalty points to use in this order. </label>
+                                        <input type="number" class="form-control text-dark" id="point" name="point" placeholder="LP Amount" max="777"
+                                               value="0">
+                                    </div>
                                 </div>
-                            </div>
+                            <% } %>
                             <div class="col-md-6 col-lg-4">
                                 <label class="font-size-20">Payment method</label>
                                 <div class="form-group">
@@ -59,56 +63,6 @@
                     </form>
                 </div>
             </div>
-
-            <% for(var i = 0; i < 10; i++) { %>
-                <!-- A Album Item -->
-                <!--<div class="col-12 mb-3">-->
-                    <!--<div class="new-hits-area padding-30">-->
-                        <!--<div class="single-new-item align-items-center wow fadeInUp" data-wow-delay="100ms">-->
-                            <!--<div class="d-flex justify-content-between">-->
-                                <!--<div class="first-part d-flex align-items-center">-->
-                                    <!--<div class="thumbnail">-->
-                                        <!--<img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">-->
-                                    <!--</div>-->
-                                    <!--<div class="content-">-->
-                                        <!--<h6>Underground</h6>-->
-                                        <!--<p>Sam Smith</p>-->
-                                        <!--<p>12 Songs</p>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div>-->
-                                    <!--<p class="font-size-20 font-weight-bold">$0.90</p>-->
-                                <!--</div>-->
-                            <!--</div>-->
-
-                            <!--<table class="table table-cs mt-3 mb-0" width="100%">-->
-                                <!--<thead>-->
-                                <!--<tr style="height: 1px">-->
-                                    <!--<th class="hidden" style="width: 5%;"></th>-->
-                                    <!--<th class="hidden" style="width: 55%;"></th>-->
-                                    <!--<th class="hidden" style="width: 20%;"></th>-->
-                                    <!--<th class="hidden" style="width: 10%;"></th>-->
-                                    <!--<th class="hidden" style="width: 10%;"></th>-->
-                                <!--</tr>-->
-                                <!--</thead>-->
-                                <!--<tbody>-->
-                                <!--<% for(var j = 0; j < 5; j++) { %>-->
-                                    <!--<tr>-->
-                                        <!--<td><i class="icon-music"></i></td>-->
-                                        <!--<td>Stars Stars Stars Stars</td>-->
-                                        <!--<td>Buble Gum</td>-->
-                                        <!--<td>2:34</td>-->
-                                        <!--<td>$9.99</td>-->
-                                    <!--</tr>-->
-                                <!--<% } %>-->
-                                <!--</tbody>-->
-                            <!--</table>-->
-
-                        <!--</div>-->
-
-                    <!--</div>-->
-                <!--</div>-->
-            <% } %>
         </div>
     </div>
 </section>

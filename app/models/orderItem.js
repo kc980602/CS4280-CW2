@@ -8,6 +8,7 @@ const OrderItem = class {
         this.refundable = refundable
         this.status = status
     }
+
 }
 
 module.exports = OrderItem;

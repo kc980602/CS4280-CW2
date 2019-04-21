@@ -24,7 +24,7 @@ const Cart = class {
     //     return result[0].total
     // }
     //
-    async getItems(userId) {
+    async getAlbumTrackItems(userId) {
         const result = await mysql.query(`SELECT a.*, GROUP_CONCAT(DISTINCT t.id ORDER BY c.track_id) as tracks FROM cart AS c, album AS a, track AS t WHERE c.user_id = ? AND c.album_id = a.id AND c.track_id = t.id GROUP BY c.album_id`, userId)
         const albumList = toInstanceForceArray(new Album(), result)
 
@@ -38,9 +38,14 @@ const Cart = class {
         }
 
         return {
-            albumList:albumList,
+            albumList: albumList,
             totalPrice: totalPrice
         }
+    }
+
+    async getTrackItems(userId) {
+        const result = await mysql.query(`SELECT t.* FROM cart AS c, track AS t WHERE user_id = ? AND c.track_id = t.id`, userId)
+        return toInstanceForceArray(new Track(), result)
     }
 
     async addItem(userId, albumId, trackId) {
@@ -57,13 +62,12 @@ const Cart = class {
         return false
     }
 
-    // getTotalPrice(tracks) {
-    //     let total = 0
-    //     if (tracks.length !== 0)
-    //         for (const item of tracks)
-    //             total += item.price
-    //     return total
-    // }
+    async clearCart(userId){
+        const result = await mysql.query(`DELETE FROM cart WHERE user_id = ?`, [userId])
+        if (result.affectedRows > 1)
+            return true
+        return false
+    }
 
 }
 

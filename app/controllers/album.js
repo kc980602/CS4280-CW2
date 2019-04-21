@@ -1,6 +1,9 @@
+const User = require('../models/user')
 const Album = require('../models/album')
 const Track = require('../models/track')
 const Cart = require('../models/cart')
+const Order = require('../models/order')
+const OrderItem = require('../models/orderItem')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
 const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
@@ -17,9 +20,11 @@ const trackStoragePath = path.resolve(storagePath, './track');
 const fullStoragePath = path.resolve(trackStoragePath, './full');
 const previewStoragePath = path.resolve(trackStoragePath, './preview');
 
+userModel = new User()
 albumModel = new Album()
 trackModel = new Track()
 cartModel = new Cart()
+orderModel = new Order()
 
 module.exports = new class {
     async insertTrack(track) {
@@ -168,7 +173,7 @@ module.exports = new class {
 
     async browseAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
-        const albumList = await albumModel.getAlbums(page-1, false)
+        const albumList = await albumModel.getAlbums(page - 1, false)
         if (albumList.length === 0) res.status(302).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
@@ -181,7 +186,7 @@ module.exports = new class {
 
     async browseAdminAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
-        const albumList = await albumModel.getAlbums(page-1, true)
+        const albumList = await albumModel.getAlbums(page - 1, true)
         if (albumList.length === 0) res.status(302).redirect('/admin/product')
         res.render('admin/product', {
             title: 'Browse Album | Mue',
@@ -196,6 +201,10 @@ module.exports = new class {
     async browseAlbum(req, res, next) {
         const data = await albumModel.getAlbum(toNumber(req.params.id, 0))
         if (!data) res.status(404).redirect('/error')
+        if (req.session.user) {
+
+        }
+
         res.render('album', {
             title: 'Browse Album | Mue',
             album: data,
@@ -207,7 +216,7 @@ module.exports = new class {
     async getTrackPreview(req, res) {
         let previewFilename = req.params.preview_filename;
 
-        if(!previewFilename)
+        if (!previewFilename)
             return res.status(400).end()
         return res.sendFile(path.resolve(previewStoragePath, previewFilename))
     }
@@ -215,7 +224,7 @@ module.exports = new class {
     async getFullTrack(req, res) {
         let fullFilename = req.params.full_filename;
 
-        if(!fullFilename)
+        if (!fullFilename)
             return res.status(400).end()
         return res.sendFile(path.resolve(fullStoragePath, fullFilename))
     }
@@ -223,12 +232,12 @@ module.exports = new class {
     async getAlbumThumbnail(req, res, next) {
         let thumbnailName = req.params.filename
 
-        if(!thumbnailName)
+        if (!thumbnailName)
             return res.status(400).end()
         return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName))
     }
 
-    async addToCart(req, res, next){
+    async addToCart(req, res, next) {
         const albumId = req.params.album
         const trackId = req.params.track
 
@@ -243,14 +252,14 @@ module.exports = new class {
             addTarget.push(trackId)
         }
 
-        for (const item of addTarget){
+        for (const item of addTarget) {
             await cartModel.addItem(req.session.user.id, albumId, item)
         }
 
         res.render('purchase/addToCart', {title: 'Added To Cart | Mue', totalItem: addTarget.length})
     }
 
-    async removeFromCart(req, res, next){
+    async removeFromCart(req, res, next) {
         const albumId = req.params.album
         const trackId = req.params.track
 
@@ -265,22 +274,72 @@ module.exports = new class {
             removeTarget.push(trackId)
         }
 
-        for (const item of removeTarget){
+        for (const item of removeTarget) {
             await cartModel.removeItem(req.session.user.id, albumId, item)
         }
 
-        res.redirect('/cart')
+        res.end()
     }
 
 
-    async getCartItems(req, res, next){
-        const data = await cartModel.getItems(37)
+    async getCartItems(req, res, next) {
+        const data = await cartModel.getAlbumTrackItems(req.session.user.id)
         res.render('purchase/cart', {
             title: 'Cart | Mue',
             albums: data.albumList,
             totalPrice: data.totalPrice,
             moment: moment
         })
+    }
+
+    async getCheckout(req, res, next) {
+        const user = await userModel.getUserById(req.session.user.id)
+        const albumList = await cartModel.getAlbumTrackItems(user.id)
+        res.render('purchase/checkout', {
+            title: 'Checkout | Mue',
+            totalPrice: albumList.totalPrice,
+            point: user.point
+        })
+    }
+
+    async confirmCheckout(req, res, next) {
+        const userId = req.session.user.id
+        const orderItems = await cartModel.getTrackItems(userId)
+
+        let point = req.body.point
+        if (!point) point = 0
+
+        const order = new Order()
+        order.user_id = userId
+
+        //  add all order item into the order
+        for (const item of orderItems) {
+            const oi = new OrderItem()
+            oi.album_id = item.album_id
+            oi.track_id = item.id
+            oi.price = item.price
+            oi.refundable = 1
+            order.order_item.push(oi)
+        }
+
+        //  set order item not refundable if using point
+        let i = 0
+        while (point !== 0) {
+            if (order.order_item[i].price >= point) {
+                order.order_item[i].refundable = 0
+                order.order_item[i].price -= point
+                point = 0
+            } else {
+                order.order_item[i].refundable = 0
+                point -= order.order_item[i].price
+                order.order_item[i].price = 0
+            }
+            i++
+        }
+
+        await order.createOrder(order, req.body.point)
+
+        res.redirect('/profile/purchase')
     }
 
 }()
