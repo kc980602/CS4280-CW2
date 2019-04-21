@@ -34,32 +34,37 @@
 
             </div>
 
-            
-            <% for(var i = 0; i < 10; i++) { %>
-                <!-- A Album Item -->
-                <div class="col-12 mb-3">
-                    <div class="new-hits-area padding-30">
-                        <div class="single-new-item align-items-center wow fadeInUp" data-wow-delay="100ms">
-                            <div class="d-flex justify-content-between">
-                                <div class="first-part d-flex align-items-center">
-                                    <div class="thumbnail">
-                                        <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
-                                    </div>
-                                    <div class="content-">
-                                        <h6>Underground</h6>
-                                        <p>Sam Smith</p>
-                                        <p>12 Songs</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="font-size-20 font-weight-bold">$0.90</p>
-                                </div>
-                            </div>
-                        </div>
 
+            <div class="col-12">
+
+                <section class="album-catagory">
+                    <div class="container">
+                        <div class="row">
+
+                            <% for(item of albums) { %>
+                                <div class="col-6 col-md-3">
+                                    <a href="/album/<%= item.id %>" class="single-album-area">
+                                        <div class="album-thumb">
+                                            <img src="<%= `/album/thumbnail/${item.thumbnail}` %>" alt="">
+                                            <div class="album-price">
+                                                <p><%=item.label%></p>
+                                            </div>
+                                        </div>
+                                        <div class="album-info">
+                                            <h5><%= item.title %></h5>
+                                            <p><%= item.artist %></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            <% } %>
+                        </div>
                     </div>
-                </div>
-            <% } %>
+                </section>
+
+                <!-- Pagination -->
+                <% include ../app/pagination.ejs %>
+            </div>
+
         </div>
         </div>
     </div>

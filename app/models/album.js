@@ -15,7 +15,7 @@ const Album = class {
         this.created = created
     }
 
-    getReleaseDateYear(){
+    getReleaseDateYear() {
         return this.release_date.getFullYear()
     }
 
@@ -24,8 +24,12 @@ const Album = class {
         return result[0].total
     }
 
-    async getAlbums(page) {
-        const result = await mysql.query(`SELECT * FROM album WHERE status = 0 LIMIT ?, 12`, page * 12)
+    async getAlbums(page, isAdmin) {
+        let sql = 'SELECT * FROM album WHERE status = 0 LIMIT ?, 12'
+        if (isAdmin) {
+            sql = 'SELECT * FROM album LIMIT ?, 12'
+        }
+        const result = await mysql.query(sql, page * 12)
         return toInstanceForceArray(new Album(), result)
     }
 
@@ -40,11 +44,11 @@ const Album = class {
         return data
     }
 
-    getTotalPrice(tracks){
-        let total =0
-        for(const item of tracks){
-            total += item.price
-        }
+    getTotalPrice(tracks) {
+        let total = 0
+        if (tracks.length !== 0)
+            for (const item of tracks)
+                total += item.price
         return total
     }
 

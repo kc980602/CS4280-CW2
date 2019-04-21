@@ -2,10 +2,7 @@ const Album = require('../models/album')
 const Track = require('../models/track')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
-const {
-    toInstanceForce,
-    toInstanceForceArray
-} = require('../../utils/serializer')
+const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
 const moment = require('moment');
 const genUID = require('../../utils/genUID');
@@ -179,6 +176,20 @@ module.exports = new class {
         })
     }
 
+    async browseAdminAlbums(req, res, next) {
+        const page = toNumber(req.query.page, 1)
+        const albumList = await album.getAlbums(page-1, true)
+        if (albumList.length === 0) res.status(302).redirect('/admin/product')
+        res.render('admin/product', {
+            title: 'Browse Album | Mue',
+            albums: albumList,
+            curr: page,
+            total: Math.ceil(await album.getAlbumsCount() / 12),
+            pathPrefix: '/admin/product?page='
+        })
+    }
+
+
     async browseAlbum(req, res, next) {
         const data = await album.getAlbum(toNumber(req.params.id, 0))
         if (!data) res.status(404).redirect('/error')
@@ -190,7 +201,7 @@ module.exports = new class {
         })
     }
 
-    async getAlbumThumbnail(req, res) {
+    async getAlbumThumbnail(req, res, next) {
         let thumbnailName = req.params.filename;
 
         if (!thumbnailName) {
@@ -199,4 +210,9 @@ module.exports = new class {
 
         return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName));
     }
+
+    async addToCart(req, res, next){
+
+    }
+
 }()
