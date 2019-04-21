@@ -9,9 +9,7 @@ router.get('/album/:id', albumController.browseAlbum)
 
 router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
-router.get('/cart', protectedRoute, (req, res, next) => {
-    res.render('purchase/cart', {title: 'Cart | Mue', isLogin: req.login,})
-})
+router.get('/cart', protectedRoute, albumController.getCartItems)
 
 router.get('/cart/:album/:track', albumController.addToCart)
 
