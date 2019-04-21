@@ -204,8 +204,25 @@ module.exports = new class {
         })
     }
 
+    async getTrackPreview(req, res) {
+        let previewFilename = req.params.preview_filename;
+
+        if(!previewFilename)
+            return res.status(400).end()
+        return res.sendFile(path.resolve(previewStoragePath, previewFilename))
+    }
+
+    async getFullTrack(req, res) {
+        let fullFilename = req.params.full_filename;
+
+        if(!fullFilename)
+            return res.status(400).end()
+        return res.sendFile(path.resolve(fullStoragePath, fullFilename))
+    }
+
     async getAlbumThumbnail(req, res, next) {
         let thumbnailName = req.params.filename
+
         if(!thumbnailName)
             return res.status(400).end()
         return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName))
