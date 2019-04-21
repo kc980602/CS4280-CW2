@@ -1,4 +1,6 @@
 const Album = require('../models/album')
+const Track = require('../models/track')
+const Cart = require('../models/cart')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
 const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
@@ -11,7 +13,9 @@ const formidable = require('formidable');
 const storagePath = path.resolve(path.dirname(__dirname), '../storage');
 const thumbnailStoragePath = path.resolve(storagePath, './thumbnail');
 
-album = new Album()
+albumModel = new Album()
+trackModel = new Track()
+cartModel = new Cart()
 
 module.exports = new class {
     async insertAlbum(album) {
@@ -87,53 +91,74 @@ module.exports = new class {
 
     async browseAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
-        const albumList = await album.getAlbums(page-1, false)
+        const albumList = await albumModel.getAlbums(page-1, false)
         if (albumList.length === 0) res.status(302).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
             albums: albumList,
             curr: page,
-            total: Math.ceil(await album.getAlbumsCount() / 12),
+            total: Math.ceil(await albumModel.getAlbumsCount() / 12),
             pathPrefix: '/browse/albums?page='
         })
     }
 
     async browseAdminAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
-        const albumList = await album.getAlbums(page-1, true)
+        const albumList = await albumModel.getAlbums(page-1, true)
         if (albumList.length === 0) res.status(302).redirect('/admin/product')
         res.render('admin/product', {
             title: 'Browse Album | Mue',
             albums: albumList,
             curr: page,
-            total: Math.ceil(await album.getAlbumsCount() / 12),
+            total: Math.ceil(await albumModel.getAlbumsCount() / 12),
             pathPrefix: '/admin/product?page='
         })
     }
 
 
     async browseAlbum(req, res, next) {
-        const data = await album.getAlbum(toNumber(req.params.id, 0))
+        const data = await albumModel.getAlbum(toNumber(req.params.id, 0))
         if (!data) res.status(404).redirect('/error')
         res.render('album', {
             title: 'Browse Album | Mue',
             album: data,
-            totalPrice: album.getTotalPrice(data.tracks),
+            totalPrice: albumModel.getTotalPrice(data.tracks),
             moment: moment
         })
     }
 
     async getAlbumThumbnail(req, res, next) {
-        let thumbnailName = req.params.filename;
-
-        if(!thumbnailName) {
-            return res.status(400).end();
-        }
-
-        return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName));
+        let thumbnailName = req.params.filename
+        if(!thumbnailName)
+            return res.status(400).end()
+        return res.sendFile(path.resolve(thumbnailStoragePath, thumbnailName))
     }
 
     async addToCart(req, res, next){
+        if (!req.session.user) {
+            res.redirect('/login')
+        }
+
+        const albumId = req.params.album
+        const trackId = req.params.track
+
+        const addTarget = []
+
+        if (trackId === 'ALL') {
+            const tracks = await trackModel.getTracks(albumId)
+            for (const item of tracks) {
+                addTarget.push(item.id)
+            }
+        } else {
+            addTarget.push(trackId)
+        }
+
+        for (const item of addTarget){
+            console.log(req.session.user.id, albumId, item)
+            await cartModel.addItem(req.session.user.id, albumId, item)
+        }
+
+        res.render('purchase/addToCart', {title: 'Added To Cart | Mue', totalItem: addTarget.length})
 
     }
 

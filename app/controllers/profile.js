@@ -1,4 +1,3 @@
-const dbController = require('./dbController')
 const profile = new class {
     async view_collection(req, res) {
         let user = req.session.user

@@ -18,7 +18,7 @@ const Track = class {
 
     async getTracks(id) {
         const result = await mysql.query(`SELECT * FROM track WHERE album_id = ? AND status = 0`, id)
-        return toInstanceForceArray(new Track(), result[0])
+        return toInstanceForceArray(new Track(), result)
     }
 
 }

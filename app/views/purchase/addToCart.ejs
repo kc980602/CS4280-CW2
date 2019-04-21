@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include ../app/head.ejs %>
+</head>
+<body>
+<!-- ##### Header Area Start ##### -->
+<% include ../app/header.ejs %>
+<!-- ##### Header Area End ##### -->
+
+<!-- ##### Breadcumb Area Start ##### -->
+<section class="breadcumb-area bg-img bg-overlay" style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
+    <div class="bradcumbContent">
+        <h2>Success!</h2>
+    </div>
+</section>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### Cart Area Start ##### -->
+<section class="cart-area padding-y-50 padding-y-md-100">
+    <div class="container">
+        <div class="row">
+            <p class="col-12  text-center text-success">
+                <i class="icon-checked font-size-60"></i>
+            </p>
+            <h2 class="col-12 text-center mb-5">Added <%= totalItem %> item to your cart.</h2>
+            <div class="col-12 text-center">
+                <a href="/cart" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Go To Cart</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Carts Area End ##### -->
+
+<% include ../app/footer.ejs %>
+</body>
+</html>

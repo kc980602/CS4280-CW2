@@ -22,11 +22,11 @@
 
             <div class="col-12 col-md-4">
                 <div class="text-center">
-                    <img src="<%= `/album/thumbnail/${album.thumbnail}` %>"  width="100%" alt="">
+                    <img src="<%= `/album/thumbnail/${album.thumbnail}` %>" width="100%" alt="">
                     <div class="mt-4">
-                        <span class="font-size-20">Full Album: </span><span class="font-size-30 font-weight-bold">$<%=totalPrice%></span>
+                        <span class="font-size-20">Full Album: </span><span class="font-size-30 font-weight-bold">$<%= totalPrice %></span>
                     </div>
-                    <a href="#" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Add To Cart</a>
+                    <a href="<%= `/cart/${album.id}/ALL`%>" class="btn oneMusic-btn m-2"><i class="icon-shopping-cart pr-3"></i>Add To Cart</a>
                 </div>
             </div>
 
@@ -34,7 +34,7 @@
 
                 <h1 class="mb-0"><%= album.title %></h1>
                 <p class="font-size-16 mb-0">By <%= album.artist %></p>
-                <p class="font-size-16 text-secondary"><%= album.getReleaseDateYear() %> • <%=album.tracks.length%> Tracks </p>
+                <p class="font-size-16 text-secondary"><%= album.getReleaseDateYear() %> • <%= album.tracks.length %> Tracks </p>
                 <table class="table table-cs mt-3 mb-0" width="100%">
                     <thead>
                     <tr style="height: 1px">
@@ -54,9 +54,9 @@
                             <td><%= item.title %></td>
                             <td><%= item.artist %></td>
                             <td><%= moment.utc(item.length * 1000).format(item.length > 3600 ? 'hh:mm:ss' : 'mm:ss') %></td>
-                            <td>$<%=item.price%></td>
+                            <td>$<%= item.price %></td>
                             <td class="text-right">
-                                <button class="btn btn-dark btn-xs">Add</button>
+                                <a href="<%= `/cart/${album.id}/${item.id}`%>" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 11px">Add</a>
                             </td>
                         </tr>
                     <% } %>

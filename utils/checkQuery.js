@@ -1,11 +1,11 @@
-const check = function (req, params, bodys) {
+const check = function (req, query, bodys) {
 
-    const missedP= []
+    const missedQ= []
     const missedB = []
 
-    for (const item of params) {
+    for (const item of query) {
         if (!req.query.hasOwnProperty(item) || req.query[item] === '') {
-            missedP.push(item)
+            missedQ.push(item)
         }
     }
     for (const item of bodys) {
@@ -15,7 +15,7 @@ const check = function (req, params, bodys) {
     }
 
     let errorMsg = ''
-    if (missedP.length > 0) errorMsg += 'Param ' + missedP.join() + ' missed.'
+    if (missedQ.length > 0) errorMsg += 'Param ' + missedQ.join() + ' missed.'
     if (missedB.length > 0) errorMsg += 'Body property ' + missedB.join() + ' missed.'
     if (errorMsg !== '') {
         return true

@@ -9,6 +9,7 @@ const Cart = class {
         this.created = created
     }
 
+
     // getReleaseDateYear() {
     //     return this.release_date.getFullYear()
     // }
@@ -18,26 +19,19 @@ const Cart = class {
     //     return result[0].total
     // }
     //
-    // async getAlbums(page, isAdmin) {
-    //     let sql = 'SELECT * FROM album WHERE status = 0 LIMIT ?, 12'
-    //     if (isAdmin) {
-    //         sql = 'SELECT * FROM album LIMIT ?, 12'
-    //     }
-    //     const result = await mysql.query(sql, page * 12)
-    //     return toInstanceForceArray(new Album(), result)
-    // }
-    //
-    // async getAlbum(id) {
-    //     //  Get Album
-    //     let result = await mysql.query(`SELECT * FROM album WHERE id = ? AND status = 0`, id)
-    //     if (result.length === 0) return false
-    //     const data = toInstanceForce(new Album(), result[0])
-    //     //  Get all tracks of the album
-    //     result = await mysql.query(`SELECT * FROM track WHERE album_id = ? AND status = 0`, id)
-    //     data.tracks = toInstanceForceArray(new Track(), result)
-    //     return data
-    // }
-    //
+    async getItems(userId) {
+        const result = await mysql.query(`SELECT * FROM cart WHERE user_id = ?`, userId)
+        return toInstanceForceArray(new Cart(), result)
+    }
+
+    async addItem(userId, albumId, trackId) {
+        //  Get Album
+        const result = await mysql.query(`INSERT IGNORE INTO cart(user_id, album_id, track_id)VALUES (?, ?, ?)`, [userId, albumId, trackId])
+        if (result.affectedRows === 1)
+            return true
+        return false
+    }
+
     // getTotalPrice(tracks) {
     //     let total = 0
     //     if (tracks.length !== 0)
