@@ -1,4 +1,5 @@
 const Album = require('../models/album')
+const Track = require('../models/track')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
 const {
@@ -11,16 +12,32 @@ const genUID = require('../../utils/genUID');
 const path = require('path');
 const fs = require('fs');
 const formidable = require('formidable');
+const MediaSplit = require('media-split');
 const storagePath = path.resolve(path.dirname(__dirname), '../storage');
 const thumbnailStoragePath = path.resolve(storagePath, './thumbnail');
+const trackStoragePath = path.resolve(storagePath, './track');
+const fullStoragePath = path.resolve(trackStoragePath, './full');
+const previewStoragePath = path.resolve(trackStoragePath, './preview');
 
 album = new Album()
 
 module.exports = new class {
-    async insertAlbum(album) {
-        const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label) VALUES(?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label]);
+    async insertTrack(track) {
+        const result = await mysql.insert(`INSERT INTO \`track\`(album_id, title, artist, length, price, quantity, file, file_preview) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`, [track.album_id, track.title, track.artist, track.length, track.price, track.quantity, track.file, track.file_preview]);
 
         console.log(result)
+        if (result) {
+            track.id = result.insertId;
+
+            return track;
+        } else {
+            return false;
+        }
+    }
+
+    async insertAlbum(album) {
+        const result = await mysql.insert(`INSERT INTO \`album\`(thumbnail, title, artist, label, release_date) VALUES(?, ?, ?, ?, ?)`, [album.thumbnail, album.title, album.artist, album.label, album.release_date]);
+
         if (result) {
             album.id = result.insertId;
 
@@ -32,56 +49,117 @@ module.exports = new class {
 
     async addAlbum(req, res) {
         let form = new formidable.IncomingForm();
+        
         form.parse(req, async (err, fields, files) => {
             if (err) {
-                return res.render('/admin/product/add', {
+                return res.render('admin/product-add', {
                     title: 'Add Albums | Mue',
-                    code: 303,
+                    code: 500,
                     message: 'Internal Server Error.'
                 });
             }
 
-            if (!fields.title || !fields.artist || !fields.label || !files.thumbnail) {
-                return res.render('/admin/product/add', {
+            console.log(fields)
+            if (!fields.title || !fields.artist || !fields.label || !fields.release_date || !fields.track_length || !files.thumbnail) {
+                return res.render('admin/product-add', {
                     title: 'Add Albums | Mue',
                     code: 400,
                     message: 'Missing parameters.'
                 })
             }
 
+            if (fields.track_length == 0) {
+                console.log(0)
+                return res.render('admin/product-add', {
+                    title: 'Add Albums | Mue',
+                    code: 400,
+                    message: 'An album must contain at least one track.'
+                });
+            }
+
             let thumbnailName = genUID() + path.extname(files.thumbnail.name);
-            let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label);
+            let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label, fields.release_date);
             let result = await this.insertAlbum(album);
 
             if (result) {
-                console.log(files)
-
-                fs.readFile(files.thumbnail.path, function (err, data) {
+                fs.readFile(files.thumbnail.path, (err, data) => {
                     if (err) {
                         return res.render('admin/product-add', {
                             title: 'Add Albums | Mue',
                             code: 500,
-                            message: 'Add album fail, please try again later.'
-                        })
+                            message: 'Uploading album thumbnail fail, please try again later.'
+                        }).end();
                     }
 
-                    fs.writeFile(path.resolve(thumbnailStoragePath, thumbnailName), data, function (err) {
+                    fs.writeFile(path.resolve(thumbnailStoragePath, thumbnailName), data, (err) => {
                         if (err) {
                             return res.render('admin/product-add', {
                                 title: 'Add Albums | Mue',
                                 code: 500,
-                                message: 'Add album fail, please try again later.'
-                            })
+                                message: 'Saving album thumbnail fail, please try again later.'
+                            }).end();
                         }
-
-                        return res.status(302).redirect('/admin/product');
                     });
                 });
+
+                for (let i = 0; i < fields.track_length; i++) {
+                    let title = fields[`trackList[${i}].title`];
+                    let artist = fields[`trackList[${i}].artist`];
+                    let length = fields[`trackList[${i}].length`];
+                    let price = fields[`trackList[${i}].price`];
+                    let quantity = fields[`trackList[${i}].quantity`];
+                    let file = files[`trackList[${i}].file`];
+
+                    if (title && artist && length && price && quantity && file) {
+                        let fullTrackName = genUID() + path.extname(file.name);
+                        let previewTrackName = genUID() + path.extname(file.name);
+
+                        let split = new MediaSplit({
+                            input: file.path,
+                            output: 'storage/track/preview',
+                            sections: [`[00:00 - 00:30] ${path.basename(previewTrackName, path.extname(file.name))}`]
+                        });
+                        split.parse().then((sections) => {
+
+                        });
+                        fs.readFile(file.path, (err, data) => {
+                            if (err) {
+                                return res.render('admin/product-add', {
+                                    title: 'Add Albums | Mue',
+                                    code: 500,
+                                    message: 'Uploading track fail, please try again later.'
+                                }).end();
+                            }
+
+                            fs.writeFile(path.resolve(fullStoragePath, fullTrackName), data, (err) => {
+                                if (err) {
+                                    return res.render('admin/product-add', {
+                                        title: 'Add Albums | Mue',
+                                        code: 500,
+                                        message: 'Saving track fail, please try again later.'
+                                    }).end();
+                                }
+                            });
+                        });
+
+                        let track = new Track(null, album.id, title, artist, length, price, quantity, fullTrackName, previewTrackName);
+                        let result = await this.insertTrack(track);
+
+                        if (!result) {
+                            return res.render('admin/product-add', {
+                                title: 'Add Albums | Mue',
+                                code: 500,
+                                message: 'Error occurred when adding track, please try again later.'
+                            }).end();
+                        }
+                    }
+                }
+                console.log('done');
+                return res.redirect('/admin/product');
             } else {
-                console.log(3)
                 res.render('admin/product-add', {
                     title: 'Add Albums | Mue',
-                    code: 500,
+                    code: 301,
                     message: 'Add album fail, please try again later.'
                 })
             }
@@ -91,7 +169,7 @@ module.exports = new class {
     async browseAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
         const albumList = await album.getAlbums(page - 1)
-        if (albumList.length === 0) res.status(302).redirect('/browse/albums')
+        if (albumList.length === 0) res.status(301).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
             albums: albumList,
@@ -115,7 +193,7 @@ module.exports = new class {
     async getAlbumThumbnail(req, res) {
         let thumbnailName = req.params.filename;
 
-        if(!thumbnailName) {
+        if (!thumbnailName) {
             return res.status(400).end();
         }
 

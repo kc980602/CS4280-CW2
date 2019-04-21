@@ -3,6 +3,187 @@
 
 <head>
     <% include ../app/head.ejs %>
+    <script>
+        window.onload = () => {
+            function previewThumbnail(event) {
+                let input = event.target;
+
+                if (input.files[0]) {
+                    $('.img-thumbnail').attr('src', URL.createObjectURL(input.files[0]));
+                    $('.img-thumbnail').one('load', (event) => {
+                        $('.img-thumbnail').show();
+                    })
+                    $('.img-thumbnail').one('error', (event) => {
+                        $('.img-thumbnail').hide();
+                    })
+                }
+            }
+            $('#thumbnail').on('change', previewThumbnail);
+            let Artist = class {
+                constructor(title, artist, length, price, quantity, file) {
+                    this.title = title;
+                    this.artist = artist;
+                    this.length = length;
+                    this.price = price;
+                    this.quantity = quantity;
+                    this.file = file;
+                }
+            }
+            let trackList = [];
+            let removeTrcak = (event) => {
+                let addTrackRow = $(event.target).closest('.add-track-row');
+                let id = addTrackRow.attr('data-id');
+
+                addTrackRow.next().remove();
+                addTrackRow.remove();
+                trackList.splice(id, 1);
+            }
+            let addTrack = (event) => {
+                if (event) {
+                    let addTrackRow = $(event.target).closest('.add-track-row');
+                    let id = addTrackRow.attr('data-id');
+                    let title = addTrackRow.find('.track-title').val();
+                    let artist = addTrackRow.find('.track-artist').val();
+                    let length = addTrackRow.next().find('.audio-player').prop('duration');
+                    let quantity = addTrackRow.find('.track-quantity').val();
+                    let price = addTrackRow.find('.track-price').val();
+                    let file = addTrackRow.find('.track-file').prop('files')[0];
+
+                    if (!title || !artist || !price || !quantity || !file) {
+                        return;
+                    }
+
+                    addTrackRow.find('input').addClass('form-control-plaintext').prop({
+                        readonly: true,
+                        disabled: true
+                    });
+                    addTrackRow.find('.add-track').hide();
+                    addTrackRow.find('.remove-track').show();
+                    trackList[id] = new Artist(title, artist, length, price, quantity, file);
+                }
+
+                let randId = Date.now();
+                let trackRow = $(`
+                                <tr class="add-track-row" data-id="${trackList.length}">
+                                    <td class="add-track-col"><input type="text" class="form-control track-title h-100" /></td>
+                                    <td class="add-track-col"><input type="text" class="form-control track-artist h-100" /></td>
+                                    <td class="add-track-col"><input type="number" class="form-control track-price" /></td>
+                                    <td class="add-track-col"><input type="number" class="form-control track-quantity" /></td>
+                                    <td class="add-track-col">
+                                        <div class="custom-file">
+                                            <label for="${randId}" class="custom-file-label"></label>
+                                            <div class="col-sm-2">
+                                                <input type="file" id="${randId}" name="thumbnail" class="custom-file-input track-file h-100"
+                                                    accept=".wav, .mp3, .ogg" required /> 
+                                            </div>
+                                        </div>   
+                                    </td>
+                                    <td class="text-right add-track-col">
+                                        <button class="btn btn-dark btn-xs h-100 remove-track">Remove</button>
+                                        <button class="btn btn-dark btn-xs h-100 add-track">Add</button>
+                                    </td>
+                                </tr>
+                                <tr class="track-audio-row" data-id="${trackList.length}">
+                                    <td class="track-audio-col" colspan="6">
+                                        <audio controls class="audio-player">
+                                            <source class="audio-source">
+                                        </audio>
+                                    </td>
+                                </tr>
+                                `);
+
+                $('#add-track-container').append(trackRow);
+
+                trackRow.next().hide();
+                trackRow.find('.track-file').on('change', (event) => {
+                    let input = event.target;
+
+                    if (input.files[0]) {
+                        let audioPlayer = trackRow.next().find('.audio-player');
+                        let audioSource = trackRow.next().find('.audio-source');
+
+                        audioSource.attr('type', input.files[0].type);
+                        audioSource.attr('src', URL.createObjectURL(input.files[0]));
+                        audioPlayer.one('canplay', (event) => {
+                            trackRow.next().show();
+                        });
+                        audioPlayer.one('abort', (event) => {
+                            trackRow.next().hide();
+                        });
+                        audioPlayer[0].load();
+                    }
+                });
+
+                trackRow.find('.remove-track').on('click', (event) => {
+                    event.preventDefault()
+                }).on('click.remove-track', removeTrcak);
+
+                trackRow.find('.add-track').on('click', (event) => {
+                    event.preventDefault()
+                }).on('click.add-track', addTrack);
+                trackRow.find('.remove-track').hide();
+            }
+
+            addTrack();
+            $('#datetimepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+            $('#add-album-submit').on('click', (event) => {
+                let formdata = new FormData();
+                let thumbnail = $('#thumbnail').prop('files')[0];
+                let title = $('#title').val();
+                let artist = $('#artist').val();
+                let label = $('#label').val();
+                let release_date = $('#release_date').val();
+
+                formdata.append('thumbnail', thumbnail);
+                formdata.append('title', title);
+                formdata.append('artist', artist);
+                formdata.append('label', label);
+                formdata.append('release_date', release_date);
+                formdata.append('track_length', trackList.length);
+
+                for (let i = 0; i < trackList.length; i++) {
+                    formdata.append(`trackList[${i}].title`, trackList[i].title);
+                    formdata.append(`trackList[${i}].artist`, trackList[i].artist);
+                    formdata.append(`trackList[${i}].length`, trackList[i].length);
+                    formdata.append(`trackList[${i}].price`, trackList[i].price);
+                    formdata.append(`trackList[${i}].quantity`, trackList[i].quantity);
+                    formdata.append(`trackList[${i}].file`, trackList[i].file);
+                }
+
+                $.ajax({
+                    url: '/admin/product/add',
+                    type: 'POST',
+                    cache: false,
+                    data: formdata,
+                    processData: false,
+                    contentType: false
+                }).done(function (res) {
+                    document.open();
+                    document.write(res);
+                    document.close();
+                    $.cache = {};
+                })
+
+                // let request = new XMLHttpRequest();
+
+                // request.addEventListener("load", (event) => {
+                //     let res = request.response;
+
+                //     window.doc = document.implementation.createHTMLDocument('');
+
+                //     console.log(res);
+                //     doc.write(res);
+                //     doc.open();
+                //     console.log(doc);
+                // });
+                // request.open("POST", "/admin/product/add", true);
+                // request.send(formdata);
+                event.preventDefault();
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -27,7 +208,7 @@
                     <div class="row d-flex justify-content-center mb-5">
                         <img class="img-thumbnail rounded w-25 h-25" style="display: none;" />
                     </div>
-                    <form action="/admin/product/add" method="post" enctype="multipart/form-data">
+                    <form action="#" method="post" enctype="multipart/form-data">
                         <div class="form-group row">
                             <div class="custom-file">
                                 <label for="thumbnail" class="custom-file-label">Choose a thumbnail...</label>
@@ -49,14 +230,43 @@
                                 <input type="text" id="artist" name="artist" class="form-control" required />
                             </div>
                         </div>
+
                         <div class="form-group row">
                             <label for="label" class="col-sm-2 col-form-label">Label</label>
                             <div class="col-sm-10">
                                 <input type="text" id="label" name="label" class="form-control" required />
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label for="release_date" class="col-sm-2 col-form-label">Release Date</label>
+                            <div class="col-sm-5">
+                                <div class='input-group date' id='datetimepicker'>
+                                    <input type='text' id="release_date" name="release_date" class="form-control" />
+                                    <div class="input-group-addon input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-cs mt-3 mb-0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="w-1">Title</th>
+                                    <th class="w-1">Artist</th>
+                                    <th class="w-1">Price</th>
+                                    <th class="w-1">Quantity</th>
+                                    <th class="w-1">File</th>
+                                    <th class="w-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="add-track-container">
+
+                            </tbody>
+                        </table>
                         <% include ../app/errMessage.ejs %>
-                        <button type="submit" class="btn oneMusic-btn btn-2 m-2">Submit</button>
+                        <button type="submit" id="add-album-submit" class="btn oneMusic-btn btn-2 m-2">Submit</button>
                     </form>
                 </div>
             </div>
@@ -65,23 +275,15 @@
     <!-- ##### Add Album Form End ##### -->
 
     <% include ../app/footer.ejs %>
-    <script>
-        function previewThumbnail(event) {
-            let input = event.target;
-
-            if (input.files[0]) {
-                let reader = new FileReader();
-
-                reader.onload = function (event) {
-                    $('.img-thumbnail').attr('src', event.target.result);
-                    $('.img-thumbnail').show();
-                }
-
-                reader.readAsDataURL(input.files[0]);
-            }
+    <style>
+        .add-track-col {
+            height: 30px;
         }
-        $('#thumbnail').on('change', previewThumbnail);
-    </script>
+
+        .row-container {
+            height: 100%;
+        }
+    </style>
 </body>
 
 </html>
