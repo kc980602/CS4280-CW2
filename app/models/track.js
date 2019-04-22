@@ -15,6 +15,7 @@ const Track = class {
         this.status = status
         this.created = created
         this.owned = false
+        this.in_cart = false
     }
 
     async getTrack(id) {

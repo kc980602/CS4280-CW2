@@ -75,9 +75,13 @@
                             <td>$<%= item.price %></td>
                             <td class="text-right">
                                 <% if (!item.owned) { %>
-                                    <form action="<%= `/cart/${album.id}/${item.id}` %>" method="post">
-                                        <button type="submit" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 12px">Add</button>
-                                    </form>
+                                    <% if (item.in_cart) { %>
+                                        <a href="/cart" class="btn btn-success btn-xs font-weight-normal" style="font-size: 12px">Cart</a>
+                                    <% } else { %>
+                                        <form action="<%= `/cart/${album.id}/${item.id}` %>" method="post">
+                                            <button type="submit" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 12px">Add</button>
+                                        </form>
+                                    <% } %>
                                 <% } %>
                             </td>
                         </tr>

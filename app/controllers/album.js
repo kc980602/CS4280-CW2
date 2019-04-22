@@ -208,6 +208,11 @@ module.exports = new class {
                 const target = data.tracks.find(t => t.id === item.track_id)
                 if (target) target.owned = true
             }
+            const inCart = await cartModel.checkInCart(req.session.user.id, albumId)
+            for (const item of inCart) {
+                const target = data.tracks.find(t => t.id === item.track_id)
+                if (target) target.in_cart = true
+            }
         }
 
         res.render('album', {
