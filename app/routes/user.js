@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user');
 const ProfileController = require('../controllers/profile')
+const OrderController = require('../controllers/order')
 const notLoginRoute = require('../middlewares/notLoginRoute')
 const protectedRoute = require('../middlewares/protectedRoute')
 
@@ -39,6 +40,5 @@ router.route('/profile/purchase', protectedRoute).get((req, res, next) => {
         isLogin: req.login,
         tab: 'PURCHASE'
     });
-    // ProfileController.view_purchase(req, res)
 })
 module.exports = router;

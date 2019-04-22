@@ -1,128 +1,191 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <% include ./app/head.ejs %>
 </head>
+
 <body>
-<!-- ##### Header Area Start ##### -->
-<% include ./app/header.ejs %>
-<!-- ##### Header Area End ##### -->
+    <!-- ##### Header Area Start ##### -->
+    <% include ./app/header.ejs %>
+    <!-- ##### Header Area End ##### -->
 
-<!-- ##### Breadcumb Area Start ##### -->
-<section class="breadcumb-area bg-img bg-overlay" style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
-    <div class="bradcumbContent">
-        <p>View you purchased item</p>
-        <h2>Profile</h2>
-    </div>
-</section>
-<!-- ##### Breadcumb Area End ##### -->
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img bg-overlay"
+        style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
+        <div class="bradcumbContent">
+            <p>View you purchased item</p>
+            <h2>Profile</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
 
-<!-- ##### Album Area Start ##### -->
-<div class="album-catagory padding-y-20 padding-y-md-50">
-
-
-    <div class="container">
-        <div class="row">
+    <!-- ##### Album Area Start ##### -->
+    <div class="album-catagory padding-y-20 padding-y-md-50">
 
 
-            <ul class="col-12 nav nav-tabs mb-4" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile/collection">Your Library</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile/purchase">Purchase History</a>
-                </li>
-            </ul>
+        <div class="container">
+            <div class="row">
 
-            <div class="col-12">
 
-                <% if (tab === 'COLLECTION') { %>
+                <ul class="col-12 nav nav-tabs mb-4" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile/collection">Your Library</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile/purchase">Purchase History</a>
+                    </li>
+                </ul>
+
+                <div class="col-12 display-container">
+
+                    <% if (tab === 'COLLECTION') { %>
                     <section class="album-catagory">
                         <div class="container">
                             <div class="row">
 
                                 <% for(var i = 0; i < 10; i++) { %>
-                                    <div class="col-6 col-md-3">
-                                        <a href="/album/123" class="single-album-area">
-                                            <div class="album-thumb">
-                                                <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>" alt="">
-                                                <div class="album-price">
-                                                    <p>$0.90</p>
-                                                </div>
+                                <div class="col-6 col-md-3">
+                                    <a href="/album/123" class="single-album-area">
+                                        <div class="album-thumb">
+                                            <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>"
+                                                alt="">
+                                            <div class="album-price">
+                                                <p>$0.90</p>
                                             </div>
-                                            <div class="album-info">
-                                                <h5>Noises</h5>
-                                                <p>Buble Gum</p>
-                                            </div>
-                                        </a>
-                                    </div>
+                                        </div>
+                                        <div class="album-info">
+                                            <h5>Noises</h5>
+                                            <p>Buble Gum</p>
+                                        </div>
+                                    </a>
+                                </div>
                                 <% } %>
                             </div>
                         </div>
                     </section>
-                <% } else { %>
-                    <% for(var i = 0; i < 10; i++) { %>
-                        <div class="col-12 mb-3">
-                            <div class="new-hits-area padding-30">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h6>Order ID: 123</h6>
-                                    <p class="mb-0">2019-04-07 05:07:56</p>
-                                </div>
-                                <p class="mb-0">Purchased 5 tracks from 2 album</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="font-weight-bold mb-0">Total: $123</p>
-                                    <button type="button" class="btn btn-dark btn-xs" data-toggle="collapse" data-target="<%='#order'+i%>">View Detail</button>
-                                </div>
+                    <% } else { %>
+                    <script>
+                        window.onload = () => {
+                            $('.order-item').find('.refund').on('click.refund', (event) => {
+                                let orderId = event.target.closest('.order-item').attr(
+                                    'data-id');
 
-                                <div id="<%='order'+i%>" class="collapse">
-                                    <table class="table table-cs mt-3 mb-0" width="100%">
-                                        <thead>
-                                        <tr style="height: 1px">
-                                            <th class="hidden" style="width: 5%;"></th>
-                                            <th class="hidden" style="width: 30%;">Album</th>
-                                            <th class="hidden" style="width: 40%;">Track</th>
-                                            <th class="hidden" style="width: 10%;">Artist</th>
-                                            <th class="hidden" style="width: 5%;">Time</th>
-                                            <th class="hidden" style="width: 5%;">Price</th>
-                                            <th class="hidden" style="width: 5%;">Redund</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <% for(var j = 0; j < 5; j++) { %>
-                                            <tr class="order-item">
-                                                <td><i class="icon-music"></i></td>
-                                                <td>ABC Album</td>
-                                                <td>Stars Stars Stars Stars</td>
-                                                <td>Buble Gum</td>
-                                                <td>2:34</td>
-                                                <td>$9.99</td>
-                                                <td class="text-right refund"><button href="" class="btn btn-dark btn-xs">Refund</button></td>
-                                            </tr>
-                                        <% } %>
-                                            <script>
-                                                window.onload = () => {
-                                                    $('.order-item').find('.refund').on('click.refund', (event) =>{
-                                                        let orderId = event.target.closest('.order-item').attr('data-id');
+                                axios.patch('/order', {
+                                    refund: true,
+                                    order_id: orderId
+                                }).then((res) => {
+                                    window.location.reload();
+                                });
+                            });
 
-                                                        axios.patch('/order', {refund: true, order_id: orderId}).then((res) => {
-                                                            window.location.reload();
-                                                        });
-                                                    });
+                            axios.get('/order/purchased').then((res) => {
+                                let result = res.data;
+
+                                console.log(result)
+                                for (let key1 in result) {
+                                    let order = result[key1];
+                                    let albumSum = 0;
+                                    let trackSum = 0;
+                                    let totalSum = 0;
+                                    for (let key2 in order.order_item) {
+                                        let orderItem = order.order_item[key2];
+                                        for (let key3 in orderItem.albums) {
+                                            let album = orderItem.albums[key3];
+
+                                            albumSum += 1;
+                                            for (let key4 in album.tracks) {
+                                                let track = album.tracks[key4];
+
+                                                trackSum += 1;
+                                                totalSum += track.price;
+                                            }
+                                        }
+                                    }
+
+                                    let orderRow = $(`
+                                    <div class="col-12 mb-3">
+                                        <div class="new-hits-area padding-30">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h6>Order ID: ${order.id} </h6>
+                                                <p class="mb-0"> ${moment(order.created).format('LLL')} </p>
+                                            </div>
+                                            <p class="mb-0">Purchased ${trackSum} tracks from ${albumSum} album</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <p class="font-weight-bold mb-0">Total: $${totalSum}</p>
+                                                <button type="button" class="btn btn-dark btn-xs" data-toggle="collapse"
+                                                    data-target="#order-${order.id}">View Detail</button>
+                                            </div>
+
+                                            <div id="order-${order.id}" class="collapse">
+                                                <table class="table table-cs mt-3 mb-0" width="100%">
+                                                    <thead>
+                                                        <tr style="height: 1px">
+                                                            <th class="hidden" style="width: 5%;"></th>
+                                                            <th class="hidden" style="width: 30%;">Album</th>
+                                                            <th class="hidden" style="width: 40%;">Track</th>
+                                                            <th class="hidden" style="width: 10%;">Artist</th>
+                                                            <th class="hidden" style="width: 5%;">Time</th>
+                                                            <th class="hidden" style="width: 5%;">Price</th>
+                                                            <th class="hidden" style="width: 5%;">Redund</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="order_item-table">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `)
+                                    for (let key2 in order.order_item) {
+                                        let orderItem = order.order_item[key2];
+                                        for (let key3 in orderItem.albums) {
+                                            let album = orderItem.albums[key3];
+                                            for (let key4 in album.tracks) {
+                                                let track = album.tracks[key4];
+                                                let orderItemRow = $(`
+                                                        <tr class="order-item">
+                                                            <td><i class="icon-music"></i></td>
+                                                            <td>${album.title}</td>
+                                                            <td>${track.title}
+                                                            </td>
+                                                            <td>${track.artist}
+                                                            </td>
+                                                            <td>${moment.utc(track.length*1000).format('mm:ss')}
+                                                            </td>
+                                                            <td>$${track.price}
+                                                            </td>
+                                                            <td class="text-right refund">
+                                                                <button href="" class="btn btn-dark btn-xs">Refund</button>
+                                                            </td>
+                                                        </tr>
+                                                        
+                                            `)
+
+                                                orderRow.find('.order_item-table').append(orderItemRow);
+                                                if (orderItem.refundable == 0 || false) {
+                                                    orderItemRow.find('.refund').hide();
                                                 }
-                                            </script>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    <% } %>
-                <% } %>
-            </div>
+                                            }
+                                        }
+                                    }
 
+                                    $('.display-container').append(orderRow);
+                                }
+
+                                console.log(res);
+                            });
+                        }
+                    </script>
+                    <% } %>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
-<!-- ##### Album Area End ##### -->
-<% include ./app/footer.ejs %>
+    <!-- ##### Album Area End ##### -->
+    <% include ./app/footer.ejs %>
 </body>
+
 </html>

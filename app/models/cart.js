@@ -25,7 +25,7 @@ const Cart = class {
     // }
     //
     async getAlbumTrackItems(userId) {
-        const result = await mysql.query(`SELECT a.*, GROUP_CONCAT(DISTINCT t.id ORDER BY c.track_id) as tracks FROM cart AS c, album AS a, track AS t WHERE c.user_id = ? AND c.album_id = a.id AND c.track_id = t.id GROUP BY c.album_id`, userId)
+        const result = await mysql.query(`SELECT a.*, GROUP_CONCAT(DISTINCT t.id ORDER BY c.track_id) as tracks FROM \`cart\` AS c, \`album\` AS a, \`track\` AS t WHERE c.user_id = ? AND c.album_id = a.id AND c.track_id = t.id GROUP BY c.album_id`, userId)
         const albumList = toInstanceForceArray(new Album(), result)
 
         let totalPrice = 0

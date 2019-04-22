@@ -5,4 +5,8 @@ const protectedRoute = require('../middlewares/protectedRoute')
 
 router.patch('/order', protectedRoute, orderController.updateOrder);
 
+router.get('/order/purchased', protectedRoute, (req, res) => {
+    orderController.getPurchased(req, res);
+});
+
 module.exports = router;

@@ -13,8 +13,9 @@ const profile = new class {
         }
     }
     async view_purchase(req, res) {
-        let user = req.session.user
-        let orders = await dbController.get_purchased_orders_by_user_id(user.id)
+        let user = req.session.user;
+        console.log(user)
+        let orders = await dbController.get_purchased_orders_by_user_id(user.id);
 
         if (orders) {
             res.render('purchase', {
