@@ -23,13 +23,15 @@
 
             <div class="col-12 col-md-6 section-heading text-left mb-50 wow fadeInUp" data-wow-delay="50ms">
                 <p>See what’s here</p>
-                <h2><%=albums.length%> Albums In Cart</h2>
+                <h2><%= albums.length %> Albums In Cart</h2>
             </div>
 
             <div class="col-12 col-md-6 section-heading text-left mb-50 wow fadeInUp" data-wow-delay="50ms">
                 <div class="d-flex align-items-center float-right">
-                    <h1 class="mb-0 mr-2"><span class="font-weight-normal">Total: </span>$<%=totalPrice%></h1>
-                    <a href="/checkout" class="btn oneMusic-btn btn-2 m-2">Checkout</a>
+                    <h1 class="mb-0 mr-2"><span class="font-weight-normal">Total: </span>$<%= totalPrice %></h1>
+                    <% if (albums.length !== 0){ %>
+                        <a href="/checkout" class="btn oneMusic-btn btn-2 m-2">Checkout</a>
+                    <% } %>
                 </div>
 
             </div>
@@ -75,7 +77,9 @@
                                         <td><%= moment.utc(track.length * 1000).format(track.length > 3600 ? 'hh:mm:ss' : 'mm:ss') %></td>
                                         <td>$<%= track.price %></td>
                                         <td class="text-right">
-                                            <a href="<%= `/cart/${item.id}/${track.id}/delete`%>" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 11px">Remove</a>
+                                            <button class="btn btn-dark btn-xs font-weight-normal" style="font-size: 12px"
+                                                    onclick="<%= `removeCartItem(${item.id}, ${track.id})` %>">Remove
+                                            </button>
                                         </td>
                                     </tr>
                                 <% } %>
@@ -91,6 +95,18 @@
     </div>
 </section>
 <!-- ##### Carts Area End ##### -->
+
+<script>
+    function removeCartItem(album, track) {
+        $.ajax({
+            type: "DELETE",
+            url: `/cart/${album}/${track}`,
+            success: msg => {
+                location.reload()
+            }
+        })
+    }
+</script>
 
 <% include ../app/footer.ejs %>
 </body>

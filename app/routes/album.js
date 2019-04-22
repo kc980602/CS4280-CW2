@@ -15,16 +15,12 @@ router.get('/album/preview/:preview_filename', albumController.getTrackPreview)
 
 router.get('/cart', protectedRoute, albumController.getCartItems)
 
-router.get('/cart/:album/:track', protectedRoute, albumController.addToCart)
+router.post('/cart/:album/:track', protectedRoute, albumController.addToCart)
 
-router.get('/cart/:album/:track/delete', protectedRoute, albumController.removeFromCart)
+router.delete('/cart/:album/:track', protectedRoute, albumController.removeFromCart)
 
-router.get('/checkout', protectedRoute, (req, res, next) => {
-    res.render('purchase/checkout', {
-        title: 'Checkout | Mue',
-        isLogin: req.login,
-    })
-})
+router.get('/checkout', protectedRoute, albumController.getCheckout)
 
+router.post('/checkout', protectedRoute, albumController.confirmCheckout)
 
 module.exports = router;
