@@ -22,14 +22,15 @@ const Order = class {
 
         const orderId = result.insertId
         const orderItem = []
-
+        let totalPrice = 0
         for (const item of order.order_item) {
             orderItem.push([orderId, item.album_id, item.track_id, item.price, item.refundable])
+            totalPrice += item.price
         }
         result = await mysql.query(`INSERT INTO \`order_item\`(\`order_id\`, \`album_id\`, \`track_id\`, \`price\`, \`refundable\`) VALUES ?`, [orderItem])
         if (result.affectedRows === order.order_item.length) {
             await cartModel.clearCart(order.user_id)
-            if (point !== 0) await userModel.deductPoint(order.user_id, point)
+            await userModel.deductPoint(order.user_id, -point + totalPrice / 2)
             for (const item of order.order_item) {
                 await trackModel.deductTrackQuantity(item.track_id)
             }

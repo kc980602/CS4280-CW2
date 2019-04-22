@@ -58,7 +58,7 @@ const User = class {
 
     async deductPoint(userId, amount) {
         const user = await this.getUserById(userId)
-        const result = await mysql.query(`UPDATE \`user\` SET \`point\` = ? WHERE \`id\` = ?`, [user.point - amount, userId])
+        const result = await mysql.query(`UPDATE \`user\` SET \`point\` = ? WHERE \`id\` = ?`, [user.point + amount, userId])
         if (result.affectedRows === 1)
             return true
         return false

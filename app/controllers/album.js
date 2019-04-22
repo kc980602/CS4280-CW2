@@ -306,8 +306,8 @@ module.exports = new class {
         const userId = req.session.user.id
         const orderItems = await cartModel.getTrackItems(userId)
 
-        let point = req.body.point
-        if (!point) point = 0
+        let point = toNumber(req.body.point,  0)
+        let tmpPoint = toNumber(req.body.point,  0)
 
         const order = new Order()
         order.user_id = userId
@@ -324,20 +324,20 @@ module.exports = new class {
 
         //  set order item not refundable if using point
         let i = 0
-        while (point !== 0) {
-            if (order.order_item[i].price >= point) {
+        while (tmpPoint !== 0) {
+            if (order.order_item[i].price >= tmpPoint) {
                 order.order_item[i].refundable = 0
-                order.order_item[i].price -= point
-                point = 0
+                order.order_item[i].price -= tmpPoint
+                tmpPoint = 0
             } else {
                 order.order_item[i].refundable = 0
-                point -= order.order_item[i].price
+                tmpPoint -= order.order_item[i].price
                 order.order_item[i].price = 0
             }
             i++
         }
 
-        await order.createOrder(order, req.body.point)
+        await order.createOrder(order, point)
 
         res.redirect('/profile/purchase')
     }
