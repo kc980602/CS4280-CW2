@@ -6,7 +6,10 @@ const Order = require('../models/order')
 const OrderItem = require('../models/orderItem')
 const check = require('../../utils/checkQuery')
 const toNumber = require('../../utils/toNumber')
-const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer')
+const {
+    toInstanceForce,
+    toInstanceForceArray
+} = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
 const moment = require('moment');
 const genUID = require('../../utils/genUID');
@@ -27,6 +30,34 @@ cartModel = new Cart()
 orderModel = new Order()
 
 module.exports = new class {
+    async getAlbum(albumId) {
+        const result = await mysql.query(`SELECT a.*, t.id AS track_id, t.title AS track_title, t.artist AS track_artist, t.price AS track_price, t.quantity AS track_quantity, t.file AS track_file
+                                            FROM \`album\` a, \`track\` t 
+                                            WHERE a.id = ? AND 
+                                                a.id = t.album_id  AND 
+                                                t.status = 0 
+                                            ORDER BY a.id`, [albumId]);
+        if (result) {
+            let albumList = {};
+
+            for (let row of result) {
+                if (!albumList[row.id]) {
+                    let album = new Album(...Object.values(row));
+
+                    albumList[row.id] = album;
+                }
+
+                let track = new Track(row.track_id, row.id, row.track_title, row.track_artist, null, row.track_price, row.track_quantity, row.track_file);
+
+                albumList[row.id].tracks.push(track);
+            }
+
+            return albumList;
+        } else {
+            return false;
+        }
+    }
+
     async insertTrack(track) {
         const result = await mysql.insert(`INSERT INTO \`track\`(album_id, title, artist, length, price, quantity, file, file_preview) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`, [track.album_id, track.title, track.artist, track.length, track.price, track.quantity, track.file, track.file_preview]);
 
@@ -171,6 +202,156 @@ module.exports = new class {
         })
     }
 
+    async updateAlbumThumbnail(album) {
+        const result = await mysql.insert(`UPDATE \`album\` SET thumbnail = ? WHERE id = ?`, [album.thumbnail, album.id]);
+
+        if (result) {
+            return album;
+        } else {
+            return false;
+        }
+    }
+
+    async updateAlbumInfo(album) {
+        const result = await mysql.insert(`UPDATE \`album\` SET title = ?, artist = ?, label = ?, release_date = ? WHERE id = ?`, [album.title, album.artist, album.label, album.release_date, album.id]);
+
+        if (result) {
+            return album;
+        } else {
+            return false;
+        }
+    }
+
+    async updateTrack(track) {
+        const result = await mysql.insert(`UPDATE \`track\` SET title = ?, artist = ?, price = ?, quantity = ? WHERE id = ? AND album_id = ?`, [track.title, track.artist, track.price, track.quantity, track.id, track.album_id]);
+
+        if (result) {
+            return track;
+        } else {
+            return false;
+        }
+    }
+
+    async removeTrack(track) {
+        const result = await mysql.insert(`UPDATE \`track\` SET status = 1 WHERE id = ? AND album_id = ?`, [track.id, track.album_id]);
+
+        if (result) {
+            return track;
+        } else {
+            return false;
+        }
+    }
+
+    async editAlbum(req, res) {
+        let form = new formidable.IncomingForm();
+
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                return res.render('admin/product', {
+                    title: 'Add Albums | Mue',
+                    code: 500,
+                    message: 'Internal Server Error.'
+                });
+            }
+
+            console.log(fields)
+            if (!fields.id || !fields.title || !fields.artist || !fields.label || !fields.release_date || !fields.track_length) {
+                return res.render('admin/product', {
+                    title: 'Add Albums | Mue',
+                    code: 400,
+                    message: 'Missing parameters.'
+                })
+            }
+
+            let thumbnailName;
+            if (files.thumbnail) {
+                thumbnailName = genUID() + path.extname(files.thumbnail.name);
+            }
+            let album = new Album(fields.id, fields.title, fields.artist, fields.label, fields.release_date, thumbnailName);
+            let result = await this.updateAlbumInfo(album);
+
+            if (result) {
+                if (files.thumbnail) {
+                    let result2 = await this.updateAlbumThumbnail(album);
+
+                    if (result2) {
+                        fs.readFile(files.thumbnail.path, (err, data) => {
+                            if (err) {
+                                return res.render('admin/product-add', {
+                                    title: 'Edit Albums | Mue',
+                                    album_id: album.id,
+                                    code: 500,
+                                    message: 'Uploading album thumbnail fail, please try again later.'
+                                }).end();
+                            }
+
+                            fs.writeFile(path.resolve(thumbnailStoragePath, thumbnailName), data, (err) => {
+                                if (err) {
+                                    return res.render('admin/product-add', {
+                                        title: 'Edit Albums | Mue',
+                                        album_id: album.id,
+                                        code: 500,
+                                        message: 'Saving album thumbnail fail, please try again later.'
+                                    }).end();
+                                }
+                            });
+                        });
+                    }
+                }
+
+                for (let i = 0; i < fields.remove_length; i++) {
+                    let id = fields[`removeList[${i}].id`];
+
+                    if (id) {
+                        let track = new Track(id, album.id);
+                        let result3 = await this.removeTrack(track);
+
+                        console.log(result3);
+                        if (!result3) {
+                            return res.render('admin/product-add', {
+                                title: 'Edit Albums | Mue',
+                                album_id: album.id,
+                                code: 500,
+                                message: 'Error occurred when removing track, please try again later.'
+                            }).end();
+                        }
+                    }
+                }
+
+                for (let i = 0; i < fields.track_length; i++) {
+                    let id = fields[`trackList[${i}].id`];
+                    let title = fields[`trackList[${i}].title`];
+                    let artist = fields[`trackList[${i}].artist`];
+                    let price = fields[`trackList[${i}].price`];
+                    let quantity = fields[`trackList[${i}].quantity`];
+
+                    if (id && title && artist && price && quantity) {
+                        let track = new Track(id, album.id, title, artist, null, price, quantity);
+                        let result3 = await this.updateTrack(track);
+
+                        if (!result3) {
+                            return res.render('admin/product-add', {
+                                title: 'Edit Albums | Mue',
+                                album_id: album.id,
+                                code: 500,
+                                message: 'Error occurred when updating track, please try again later.'
+                            }).end();
+                        }
+                    }
+                }
+                console.log('done');
+                return res.redirect(`/admin/product/management/${album.id}`);
+            } else {
+                res.render('admin/product-add', {
+                    title: 'Edit Albums | Mue',
+                    album_id: album.id,
+                    code: 301,
+                    message: 'Add album fail, please try again later.'
+                })
+            }
+        })
+    }
+
     async browseAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
         const albumList = await albumModel.getAlbums(page - 1, false)
@@ -274,7 +455,10 @@ module.exports = new class {
             await cartModel.addItem(req.session.user.id, albumId, item)
         }
 
-        res.render('purchase/addToCart', {title: 'Added To Cart | Mue', totalItem: addTarget.length})
+        res.render('purchase/addToCart', {
+            title: 'Added To Cart | Mue',
+            totalItem: addTarget.length
+        })
     }
 
     async removeFromCart(req, res, next) {
@@ -360,4 +544,14 @@ module.exports = new class {
         res.redirect('/profile/purchase')
     }
 
+    async getAllAlbumInfo(req, res) {
+        let albumId = req.params.album_id;
+        let album = await this.getAlbum(albumId);
+
+        if (album) {
+            res.json(album);
+        } else {
+            res.status(400).end();
+        }
+    }
 }()

@@ -5,6 +5,8 @@
     <% include ../app/head.ejs %>
     <script>
         window.onload = () => {
+            let albumId = <%= album_id %>
+
             function previewThumbnail(event) {
                 let input = event.target;
 
@@ -19,51 +21,34 @@
                 }
             }
             $('#thumbnail').on('change', previewThumbnail);
-            let Artist = class {
-                constructor(title, artist, length, price, quantity, file) {
+            let Track = class {
+                constructor(id, title, artist, length, price, quantity, file) {
+                    this.id = id;
                     this.title = title;
                     this.artist = artist;
                     this.length = length;
                     this.price = price;
                     this.quantity = quantity;
                     this.file = file;
+                    this.dom = null;
                 }
             }
+            let removeList = [];
             let trackList = [];
             let removeTrcak = (event) => {
                 let addTrackRow = $(event.target).closest('.add-track-row');
                 let id = addTrackRow.attr('data-id');
 
+                removeList.push(trackList[id]);
                 addTrackRow.next().remove();
                 addTrackRow.remove();
                 trackList.splice(id, 1);
+                console.log(removeList)
             }
-            let addTrack = (event) => {
-                if (event) {
-                    let addTrackRow = $(event.target).closest('.add-track-row');
-                    let id = addTrackRow.attr('data-id');
-                    let title = addTrackRow.find('.track-title').val();
-                    let artist = addTrackRow.find('.track-artist').val();
-                    let length = addTrackRow.next().find('.audio-player').prop('duration');
-                    let quantity = addTrackRow.find('.track-quantity').val();
-                    let price = addTrackRow.find('.track-price').val();
-                    let file = addTrackRow.find('.track-file').prop('files')[0];
-
-                    if (!title || !artist || !price || !quantity || !file) {
-                        return;
-                    }
-
-                    addTrackRow.find('input').addClass('form-control-plaintext').prop({
-                        readonly: true,
-                        disabled: true
-                    });
-                    addTrackRow.find('.add-track').hide();
-                    addTrackRow.find('.remove-track').show();
-                    trackList[id] = new Artist(title, artist, length, price, quantity, file);
-                }
-
-                let randId = Date.now();
-                let trackRow = $(`
+            let addTrack = async (track) => {
+                if (track) {
+                    let randId = Date.now();
+                    let trackRow = $(`
                                 <tr class="add-track-row" data-id="${trackList.length}">
                                     <td class="add-track-col"><input type="text" class="form-control track-title h-100" /></td>
                                     <td class="add-track-col"><input type="text" class="form-control track-artist h-100" /></td>
@@ -73,14 +58,13 @@
                                         <div class="custom-file">
                                             <label for="${randId}" class="custom-file-label"></label>
                                             <div class="col-sm-2">
-                                                <input type="file" id="${randId}" name="thumbnail" class="custom-file-input track-file h-100"
+                                                <input type="file" id="${randId}" class="custom-file-input track-file h-100"
                                                     accept=".wav, .mp3, .ogg" required /> 
                                             </div>
                                         </div>   
                                     </td>
                                     <td class="text-right add-track-col">
                                         <button class="btn btn-dark btn-xs h-100 remove-track">Remove</button>
-                                        <button class="btn btn-dark btn-xs h-100 add-track">Add</button>
                                     </td>
                                 </tr>
                                 <tr class="track-audio-row" data-id="${trackList.length}">
@@ -92,36 +76,82 @@
                                 </tr>
                                 `);
 
-                $('#add-track-container').append(trackRow);
+                    $('#add-track-container').append(trackRow);
 
-                trackRow.next().hide();
-                trackRow.find('.track-file').on('change', (event) => {
-                    let input = event.target;
+                    trackRow.next().hide();
+                    trackRow.find('.track-file').prop({
+                        readonly: true,
+                        disabled: true
+                    });
+                    trackRow.find('.track-file').on('change', (event) => {
+                        let input = event.target;
 
-                    if (input.files[0]) {
-                        let audioPlayer = trackRow.next().find('.audio-player');
-                        let audioSource = trackRow.next().find('.audio-source');
+                        if (input.files[0]) {
+                            let audioPlayer = trackRow.next().find('.audio-player');
+                            let audioSource = trackRow.next().find('.audio-source');
 
-                        audioSource.attr('type', input.files[0].type);
-                        audioSource.attr('src', URL.createObjectURL(input.files[0]));
-                        audioPlayer.one('canplay', (event) => {
-                            trackRow.next().show();
-                        });
-                        audioPlayer.one('abort', (event) => {
-                            trackRow.next().hide();
-                        });
-                        audioPlayer[0].load();
-                    }
-                });
+                            audioSource.attr('type', input.files[0].type);
+                            audioSource.attr('src', URL.createObjectURL(input.files[0]));
+                            audioPlayer.one('canplay', (event) => {
+                                trackRow.next().show();
+                            });
+                            audioPlayer.one('abort', (event) => {
+                                trackRow.next().hide();
+                            });
+                            audioPlayer[0].load();
+                        }
+                    });
 
-                trackRow.find('.remove-track').on('click', (event) => {
-                    event.preventDefault()
-                }).on('click.remove-track', removeTrcak);
+                    trackRow.find('.remove-track').on('click', (event) => {
+                        event.preventDefault()
+                    }).on('click.remove-track', removeTrcak);
 
-                trackRow.find('.add-track').on('click', (event) => {
-                    event.preventDefault()
-                }).on('click.add-track', addTrack);
-                trackRow.find('.remove-track').hide();
+                    let addTrackRow = $($('.add-track-row').get(trackList.length))
+                    let id;
+                    let title;
+                    let artist;
+                    let length;
+                    let quantity;
+                    let price;
+                    let file;
+
+                    console.log(trackList.length)
+                    id = trackList.length;
+                    title = track.title;
+                    artist = track.artist;
+                    quantity = track.quantity;
+                    price = track.price;
+                    file = await axios.get(`/album/full/${track.file}`, {
+                        responseType: 'blob'
+                    }).then((res) => {
+                        return Promise.resolve(res.data);
+                    });
+                    addTrackRow.attr('data-id', id);
+                    addTrackRow.attr('data-real-id', track.id);
+                    addTrackRow.find('.track-title').val(title);
+                    addTrackRow.find('.track-artist').val(artist);
+                    addTrackRow.find('.track-quantity').val(quantity);
+                    addTrackRow.find('.track-price').val(price);
+
+                    console.log(addTrackRow.next())
+                    let audioPlayer = addTrackRow.next().find('.audio-player');
+                    let audioSource = addTrackRow.next().find('.audio-source');
+
+                    audioSource.attr('src', URL.createObjectURL(file));
+                    audioPlayer.one('canplay', (event) => {
+                        trackList[id].length = audioPlayer.prop('duration');
+                        addTrackRow.next().show();
+                    });
+                    audioPlayer.one('abort', (event) => {
+                        addTrackRow.next().hide();
+                    });
+                    audioPlayer[0].load();
+                    let newTrack = new Track(track.id, title, artist, length, price, quantity, file);
+
+                    newTrack.dom = addTrackRow;
+                    trackList[id] = newTrack;
+                }
+                console.log(trackList)
             }
 
             addTrack();
@@ -130,30 +160,42 @@
             });
             $('#add-album-submit').on('click', (event) => {
                 let formdata = new FormData();
+                let id = $('#add-track-container').attr('data-id');
                 let thumbnail = $('#thumbnail').prop('files')[0];
                 let title = $('#title').val();
                 let artist = $('#artist').val();
                 let label = $('#label').val();
                 let release_date = $('#release_date').val();
 
-                formdata.append('thumbnail', thumbnail);
+                formdata.append('id', id);
+                if (thumbnail) {
+                    formdata.append('thumbnail', thumbnail);
+                }
                 formdata.append('title', title);
                 formdata.append('artist', artist);
                 formdata.append('label', label);
                 formdata.append('release_date', release_date);
+                formdata.append('remove_length', removeList.length);
                 formdata.append('track_length', trackList.length);
 
+                for (let i = 0; i < removeList.length; i++) {
+                    formdata.append(`removeList[${i}].id`, removeList[i].id);
+                    formdata.append(`removeList[${i}].title`, removeList[i].title);
+                    formdata.append(`removeList[${i}].artist`, removeList[i].artist);
+                    formdata.append(`removeList[${i}].length`, removeList[i].length);
+                    formdata.append(`removeList[${i}].price`, removeList[i].price);
+                    formdata.append(`removeList[${i}].quantity`, removeList[i].quantity);
+                }
                 for (let i = 0; i < trackList.length; i++) {
-                    formdata.append(`trackList[${i}].title`, trackList[i].title);
-                    formdata.append(`trackList[${i}].artist`, trackList[i].artist);
-                    formdata.append(`trackList[${i}].length`, trackList[i].length);
-                    formdata.append(`trackList[${i}].price`, trackList[i].price);
-                    formdata.append(`trackList[${i}].quantity`, trackList[i].quantity);
-                    formdata.append(`trackList[${i}].file`, trackList[i].file);
+                    formdata.append(`trackList[${i}].id`, trackList[i].id);
+                    formdata.append(`trackList[${i}].title`, trackList[i].dom.find('.track-title').val());
+                    formdata.append(`trackList[${i}].artist`, trackList[i].dom.find('.track-artist').val());
+                    formdata.append(`trackList[${i}].price`, trackList[i].dom.find('.track-price').val());
+                    formdata.append(`trackList[${i}].quantity`, trackList[i].dom.find('.track-quantity').val());
                 }
 
                 $.ajax({
-                    url: '/admin/product/add',
+                    url: '/admin/product/management',
                     type: 'POST',
                     cache: false,
                     data: formdata,
@@ -167,6 +209,36 @@
                 })
                 event.preventDefault();
             });
+
+            axios.get(`/admin/product/${albumId}`).then(async (res) => {
+                let albumList = res.data;
+
+                console.log(albumList);
+                for (let key in albumList) {
+                    let album = albumList[key];
+
+                    $('#add-track-container').attr('data-id', album.id);
+                    axios.get(`/album/thumbnail/${album.thumbnail}`, {
+                        responseType: 'blob'
+                    }).then((res) => {
+                        $('.img-thumbnail').attr('src', URL.createObjectURL(res.data));
+                        $('.img-thumbnail').one('load', (event) => {
+                            $('.img-thumbnail').show();
+                        })
+                        $('.img-thumbnail').one('error', (event) => {
+                            $('.img-thumbnail').hide();
+                        })
+                    });
+                    $('#title').val(album.title);
+                    $('#artist').val(album.artist);
+                    $('#label').val(album.label);
+                    $('#release_date').val(moment(album.release_date).format('YYYY-MM-DD'));
+
+                    for (let key2 in album.tracks) {
+                        await addTrack(album.tracks[key2]);
+                    }
+                }
+            })
         }
     </script>
 </head>
@@ -180,7 +252,7 @@
     <section class="breadcumb-area bg-img bg-overlay"
         style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
         <div class="bradcumbContent">
-            <h2>Add Product</h2>
+            <h2>Update Product</h2>
         </div>
     </section>
     <!-- ##### Breadcumb Area End ##### -->
@@ -251,7 +323,7 @@
                             </tbody>
                         </table>
                         <% include ../app/errMessage.ejs %>
-                        <button type="submit" id="add-album-submit" class="btn oneMusic-btn btn-2 m-2">Submit</button>
+                        <button type="submit" id="add-album-submit" class="btn oneMusic-btn btn-2 m-2">Update</button>
                     </form>
                 </div>
             </div>

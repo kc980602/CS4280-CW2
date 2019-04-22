@@ -1,21 +1,154 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <% include ../app/head.ejs %>
 </head>
+
 <body>
-<!-- ##### Header Area Start ##### -->
-<% include ./header.ejs %>
-<!-- ##### Header Area End ##### -->
+    <!-- ##### Header Area Start ##### -->
+    <% include ./header.ejs %>
+    <!-- ##### Header Area End ##### -->
 
-<!-- ##### Breadcumb Area Start ##### -->
-<section class="breadcumb-area bg-img bg-overlay" style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
-    <div class="bradcumbContent">
-        <h2>Refund</h2>
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img bg-overlay"
+        style="background-image: url(/img/bg-img/breadcumb3.jpg); max-height: 200px">
+        <div class="bradcumbContent">
+            <p>View all refund request</p>
+            <h2>Refund</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Album Area Start ##### -->
+    <div class="album-catagory padding-y-20 padding-y-md-50">
+
+
+        <div class="container">
+            <div class="row refund-list-container">
+
+                <script>
+                    window.onload = () => {
+                        axios.get('/admin/refund-request').then((res) => {
+                            let result = res.data;
+
+                            console.log(result)
+                            for (let key1 in result) {
+                                let order = result[key1];
+                                let albumSum = 0;
+                                let trackSum = 0;
+                                let totalSum = 0;
+                                for (let key2 in order.order_item) {
+                                    let orderItem = order.order_item[key2];
+                                    for (let key3 in orderItem.albums) {
+                                        let album = orderItem.albums[key3];
+
+                                        albumSum += 1;
+                                        for (let key4 in album.tracks) {
+                                            let track = album.tracks[key4];
+
+                                            trackSum += 1;
+                                            totalSum += track.price;
+                                        }
+                                    }
+                                }
+
+                                let orderRow = $(`
+                                        <div class="col-12 mb-3">
+                                            <div class="new-hits-area padding-30">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h6>Order ID: ${order.id} </h6>
+                                                    <p class="mb-0"> ${moment(order.created).format('LLL')} </p>
+                                                </div>
+                                                <p class="mb-0">Purchased ${trackSum} tracks from ${albumSum} album</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <p class="font-weight-bold mb-0">Total: $${totalSum}</p>
+                                                    <button type="button" class="btn btn-dark btn-xs" data-toggle="collapse"
+                                                        data-target="#order-${order.id}">View Detail</button>
+                                                </div>
+    
+                                                <div id="order-${order.id}" class="collapse">
+                                                    <table class="table table-cs mt-3 mb-0" width="100%">
+                                                        <thead>
+                                                            <tr style="height: 1px">
+                                                                <th class="hidden" style="width: 5%;"></th>
+                                                                <th class="hidden" style="width: 25%;">Album</th>
+                                                                <th class="hidden" style="width: 35%;">Track</th>
+                                                                <th class="hidden" style="width: 10%;">Artist</th>
+                                                                <th class="hidden" style="width: 5%;">Time</th>
+                                                                <th class="hidden" style="width: 5%;">Price</th>
+                                                                <th class="hidden" style="width: 15%;">Operation</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="order_item-table">
+    
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `)
+                                for (let key2 in order.order_item) {
+                                    let orderItem = order.order_item[key2];
+                                    for (let key3 in orderItem.albums) {
+                                        let album = orderItem.albums[key3];
+                                        for (let key4 in album.tracks) {
+                                            let track = album.tracks[key4];
+                                            let orderItemRow = $(`
+                                                            <tr class="order-item" data-id="${orderItem.id}">
+                                                                <td><i class="icon-music"></i></td>
+                                                                <td>${album.title}</td>
+                                                                <td>${track.title}
+                                                                </td>
+                                                                <td>${track.artist}
+                                                                </td>
+                                                                <td>${moment.utc(track.length*1000).format('mm:ss')}
+                                                                </td>
+                                                                <td>$${track.price}
+                                                                </td>
+                                                                <td class="text-right refund">
+                                                                    <button class="btn btn-success btn-xs accept-refund">Accept</button>
+                                                                    <button class="btn btn-danger btn-xs decline-refund">Decline</button>
+                                                                </td>
+                                                            </tr>
+    
+                                                `)
+
+                                            orderRow.find('.order_item-table').append(orderItemRow);
+                                            orderItemRow.find('.accept-refund').on('click.accept-refund', (
+                                                event) => {
+                                                axios.patch('/order', {
+                                                    accept_refund: true,
+                                                    order_item_id: orderItem.id
+                                                }).then((res) => {
+                                                    window.location.reload();
+                                                });
+                                            });
+                                            orderItemRow.find('.decline-refund').on('click.decline-refund',
+                                                (
+                                                    event) => {
+                                                    axios.patch('/order', {
+                                                        accept_refund: false,
+                                                        order_item_id: orderItem.id
+                                                    }).then((res) => {
+                                                        window.location.reload();
+                                                    });
+                                                });
+                                        }
+                                    }
+                                }
+
+                                $('.refund-list-container').append(orderRow);
+                            }
+
+                        });
+                    }
+                </script>
+            </div>
+        </div>
     </div>
-</section>
-<!-- ##### Breadcumb Area End ##### -->
-
-<% include ../app/footer.ejs %>
+    <!-- ##### Album Area End ##### -->
+    <% include ../app/footer.ejs %>
 </body>
+
 </html>

@@ -125,6 +125,7 @@
                                         </div>
                                     </div>
                                     `)
+                                    let index = 0;
                                     for (let key2 in order.order_item) {
                                         let orderItem = order.order_item[key2];
                                         for (let key3 in orderItem.albums) {
@@ -150,9 +151,11 @@
 
                                             `)
 
-                                            console.log(order.refund_ava, orderItem.refundable)
                                                 orderRow.find('.order_item-table').append(orderItemRow);
-                                                if (orderItem.refundable == 0 || orderItem.status != 0 || order.refund_ava ==  0) {
+                                                if(orderItem.refundable == 0  && index === 0){
+                                                    orderItem.refundable = 1;
+                                                }
+                                                if (orderItem.status != 0 || order.refund_ava ==  0) {
                                                     let refundStatus;
 
                                                     switch (orderItem.status) {
@@ -173,7 +176,7 @@
                                                             break;
                                                     }
                                                     orderItemRow.find('.refund').append(refundStatus);
-                                                } else {
+                                                } else if(orderItem.refundable == 1){
                                                     let refundButton = $(
                                                         `<button class="btn btn-dark btn-xs">Refund</button>`
                                                     );
@@ -189,7 +192,7 @@
                                                     });
                                                     orderItemRow.find('.refund').append(refundButton);
                                                 }
-
+                                                index ++;
                                             }
                                         }
                                     }

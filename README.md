@@ -57,7 +57,8 @@ CHEUNG Pak Lun (Freerider not doing even anything)
 - /admin/product
 - /admin/product/add
 - /admin/product/album/:id
-- /admin/product/refund
+- /admin/product/management/:album_id
+- /admin/refund
 
 -Browse albums, query from album DB
 - /browse/albums
@@ -106,6 +107,7 @@ CREATE TABLE `album` (
 	`artist` VARCHAR(100) NOT NULL,
 	`label` VARCHAR(100) DEFAULT '',
 	`release_date` DATE NOT NULL,
+	`thumbnail` VARCHAR(100) DEFAULT '',
 	`status` INT(3) DEFAULT 0,
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
