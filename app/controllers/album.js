@@ -380,10 +380,20 @@ module.exports = new class {
 
 
     async browseAlbum(req, res, next) {
-        const data = await albumModel.getAlbum(toNumber(req.params.id, 0))
+        const albumId = toNumber(req.params.id, 0)
+        const data = await albumModel.getAlbum(albumId)
         if (!data) res.status(404).redirect('/error')
         if (req.session.user) {
-
+            const purchased = await orderModel.checkPurchased(req.session.user.id, albumId)
+            for (const item of purchased) {
+                const target = data.tracks.find(t => t.id === item.track_id)
+                if (target) target.owned = true
+            }
+            const inCart = await cartModel.checkInCart(req.session.user.id, albumId)
+            for (const item of inCart) {
+                const target = data.tracks.find(t => t.id === item.track_id)
+                if (target) target.in_cart = true
+            }
         }
 
         res.render('album', {
@@ -408,6 +418,14 @@ module.exports = new class {
         if (!fullFilename)
             return res.status(400).end()
         return res.sendFile(path.resolve(fullStoragePath, fullFilename))
+    }
+
+    async getFullTrackFile(req, res) {
+        let fullFilename = req.params.full_filename;
+
+        if (!fullFilename)
+            return res.status(400).end()
+        res.download(path.resolve(fullStoragePath, fullFilename))
     }
 
     async getAlbumThumbnail(req, res, next) {
@@ -490,8 +508,8 @@ module.exports = new class {
         const userId = req.session.user.id
         const orderItems = await cartModel.getTrackItems(userId)
 
-        let point = req.body.point
-        if (!point) point = 0
+        let point = toNumber(req.body.point, 0)
+        let tmpPoint = toNumber(req.body.point, 0)
 
         const order = new Order()
         order.user_id = userId
@@ -508,20 +526,20 @@ module.exports = new class {
 
         //  set order item not refundable if using point
         let i = 0
-        while (point !== 0) {
-            if (order.order_item[i].price >= point) {
+        while (tmpPoint !== 0) {
+            if (order.order_item[i].price >= tmpPoint) {
                 order.order_item[i].refundable = 0
-                order.order_item[i].price -= point
-                point = 0
+                order.order_item[i].price -= tmpPoint
+                tmpPoint = 0
             } else {
                 order.order_item[i].refundable = 0
-                point -= order.order_item[i].price
+                tmpPoint -= order.order_item[i].price
                 order.order_item[i].price = 0
             }
             i++
         }
 
-        await order.createOrder(order, req.body.point)
+        await order.createOrder(order, point)
 
         res.redirect('/profile/purchase')
     }

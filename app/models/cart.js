@@ -69,6 +69,11 @@ const Cart = class {
         return false
     }
 
+    async checkInCart(userId, albumId) {
+        const result = await mysql.query(`SELECT track_id FROM \`cart\` WHERE user_id = ? AND album_id = ?`, [userId, albumId])
+        return result
+    }
+
 }
 
 module.exports = Cart
