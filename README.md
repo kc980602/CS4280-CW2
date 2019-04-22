@@ -22,7 +22,7 @@ MAK Kai Chung
 CHEUNG Pak Lun
 - NONE
 
-#Submission 2 - Pending
+#Submission 2 - Work Done
 Cheung Pui Lam
 - All UI
 - Complete Cart and Checkout
@@ -34,35 +34,55 @@ MAK Kai Chung
 CHEUNG Pak Lun (Freerider not doing even anything)
 - Complete Admin page
 
+#Techniques used
+ MVC architecture is used ✓
+ static pages are used ✓
+ URL query string extraction ✓
+ request body query string and json extraction ✓
+ file upload, e.g. document submission during account registration ✓
+ database direct access (MySql must be used) ✓
+ RESTful api implementation ✓
+ server side template rendering with ejs ✓
+ server side include with ejs ✓
+ file download, e.g. train schedule, album price list or customer document review ✓
+ session tracking with database session store ✓
+
+#Test Account
+username: admin
+password: 123
+username: admin2
+password: 123
+username: admin3
+password: 123
+
 #Route Design
--Index page
-- / 
+-Index page - Cheung Pui Lam
+- /
 
 -Sign in / Sign out
-- /login
-- /register
+- /login - Cheung Pui Lam
+- /register - MAK Kai Chung
 
--My purchase
+-My purchase - MAK Kai Chung
 - /profile/collection
 - /profile/purchase
 
--Shopping cart
+-Shopping cart - Cheung Pui Lam
 - /cart
 
--Checkout
+-Checkout - Cheung Pui Lam
 - /checkout
 
 -Admin page
-- /admin -> statistics of sales
-- /admin/product
-- /admin/product/add
-- /admin/product/album/:id
-- /admin/product/management/:album_id
-- /admin/refund
+- /admin -> statistics of sales - Cheung Pui Lam
+- /admin/product - Cheung Pui Lam
+- /admin/product/add - MAK Kai Chung
+- /admin/product/management/:album_id - MAK Kai Chung
+- /admin/refund - MAK Kai Chung
 
 -Browse albums, query from album DB
-- /browse/albums
-- /browse/albums/:id
+- /browse/albums - Cheung Pui Lam
+- /browse/albums/:id - MAK Kai Chung
 
 #Database design
 
