@@ -26,12 +26,7 @@ router.get('/profile', protectedRoute, async (req, res, next) => {
 })
 
 router.route('/profile/collection', protectedRoute).get((req, res) => {
-    res.render('profile', {
-        title: 'Your Library | Mue',
-        isLogin: req.login,
-        tab: 'COLLECTION'
-    })
-    // ProfileController.view_collection(req, res)
+    ProfileController.view_collection(req, res)
 })
 
 router.route('/profile/purchase', protectedRoute).get((req, res, next) => {

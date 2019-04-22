@@ -9,20 +9,37 @@ const {
     toInstanceForceArray
 } = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
-const moment = require('moment');
-const genUID = require('../../utils/genUID');
-const path = require('path');
-const fs = require('fs');
-const formidable = require('formidable');
-const MediaSplit = require('media-split');
 
 albumModel = new Album()
 trackModel = new Track()
 cartModel = new Cart()
 
 module.exports = new class {
+    async getCollection(user) {
+        const result = await mysql.query(`SELECT a.*, sum(t.price) AS total
+                                                FROM \`album\` a, \`track\` t, \`order\` o, \`order_item\` oi 
+                                                WHERE o.user_id = ? AND
+                                                        o.id = oi.order_id AND
+                                                        a.id = oi.album_id AND
+                                                        t.id = oi.track_id 
+                                                GROUP BY a.id 
+                                                ORDER BY a.title`, [user.id]);
+        if (result) {
+            let albumList = [];
+            
+            for (let row of result) {
+                let album = new Album(...Object.values(row));
+
+                album.total = row.total;
+                albumList.push(album);
+            }
+
+            return albumList;
+        } else
+            return false;
+    }
     async getOrderList(user) {
-        const result = await mysql.insert(`SELECT *, a.id AS album_id, a.thumbnail, a.title AS album_title, o.id AS order_id, o.created AS order_created, oi.id AS oi_id, oi.refundable AS oi_refundable, oi.status AS oi_status
+        const result = await mysql.query(`SELECT *, a.id AS album_id, a.thumbnail, a.title AS album_title, o.id AS order_id, o.created AS order_created, oi.id AS oi_id, oi.refundable AS oi_refundable, oi.status AS oi_status
                                                 , t.id AS track_id, t.title AS track_title, t.artist AS track_artist
                                                 FROM \`album\` a, \`track\` t, \`order\` o, \`order_item\` oi 
                                                 WHERE o.user_id = ? AND
@@ -40,7 +57,7 @@ module.exports = new class {
                     order.order_item = {};
                     orderList[row.order_id] = order;
                 }
-                if(!orderList[row.order_id].order_item[row.oi_id]){
+                if (!orderList[row.order_id].order_item[row.oi_id]) {
                     let orderItem = new OrderItem(row.oi_id);
 
                     orderItem.albums = {};
@@ -102,9 +119,9 @@ module.exports = new class {
         let user = req.session.user;
         let orderList = await this.getOrderList(user);
 
-        if(orderList) {
+        if (orderList) {
             res.json(orderList);
-        }else {
+        } else {
             res.status(500).end();
         }
     }

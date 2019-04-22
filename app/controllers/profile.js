@@ -1,26 +1,27 @@
+const Album = require('../models/album')
+const Track = require('../models/track')
+const Order = require('../models/order')
+const OrderItem = require('../models/orderItem')
+const User = require('../models/user')
+const Cart = require('../models/cart')
+const {
+    toInstanceForce,
+    toInstanceForceArray
+} = require('../../utils/serializer')
+const mysql = require('../../mysql/utils')
+const orderController = require('./order')
+
+
 const profile = new class {
     async view_collection(req, res) {
         let user = req.session.user
-        let collection = await dbController.get_purchased_collection_by_user_id(user.id)
+        let collection = await orderController.getCollection(user);
 
         if (collection) {
-            res.render('collection', {
-                isLogin: req.login,
-                collection: collection
-            })
-        } else {
-            res.status(500).end()
-        }
-    }
-    async view_purchase(req, res) {
-        let user = req.session.user;
-        console.log(user)
-        let orders = await dbController.get_purchased_orders_by_user_id(user.id);
-
-        if (orders) {
-            res.render('purchase', {
-                isLogin: req.login,
-                collection: orders
+            res.render('profile', {
+                title: 'Your Library | Mue',
+                collection: collection,
+                tab: 'COLLECTION'
             })
         } else {
             res.status(500).end()

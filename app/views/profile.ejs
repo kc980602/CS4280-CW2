@@ -44,19 +44,19 @@
                         <div class="container">
                             <div class="row">
 
-                                <% for(var i = 0; i < 10; i++) { %>
+                                <% for(var key in collection) { %>
                                 <div class="col-6 col-md-3">
-                                    <a href="/album/123" class="single-album-area">
+                                    <a href="<%= `/album/${collection[key].id}` %>" class="single-album-area">
                                         <div class="album-thumb">
-                                            <img src="<%= `/img/bg-img/a${Math.floor(Math.random() * (+12 - +1)) + +1}.jpg` %>"
+                                            <img src="<%= `/album/thumbnail/${collection[key].thumbnail}` %>"
                                                 alt="">
                                             <div class="album-price">
-                                                <p>$0.90</p>
+                                                <p>$<%= collection[key].total %></p>
                                             </div>
                                         </div>
                                         <div class="album-info">
-                                            <h5>Noises</h5>
-                                            <p>Buble Gum</p>
+                                            <h5><%= collection[key].title %></h5>
+                                            <p><%= collection[key].artist %></p>
                                         </div>
                                     </a>
                                 </div>

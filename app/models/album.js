@@ -3,13 +3,13 @@ const {toInstanceForce, toInstanceForceArray} = require('../../utils/serializer'
 const Track = require('../models/track')
 
 const Album = class {
-    constructor(id, thumbnail, title, artist, label, release_date, status, created) {
+    constructor(id, title, artist, label, release_date, thumbnail, status, created) {
         this.id = id
-        this.thumbnail = thumbnail;
         this.title = title
         this.artist = artist
         this.label = label
         this.release_date = release_date
+        this.thumbnail = thumbnail;
         this.tracks = []
         this.status = status
         this.created = created
