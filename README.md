@@ -57,6 +57,7 @@ CHEUNG Pak Lun (Freerider not doing even anything)
 - /admin/product
 - /admin/product/add
 - /admin/product/album/:id
+- /admin/product/management/:album_id
 - /admin/refund
 
 -Browse albums, query from album DB
