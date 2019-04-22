@@ -8,4 +8,11 @@ router.get('/', function (req, res, next) {
     });
 });
 
+router.get('/documentation', function (req, res, next) {
+    res.render('documentation', {
+        title: 'Documentation | Mue'
+    });
+});
+
+
 module.exports = router;
