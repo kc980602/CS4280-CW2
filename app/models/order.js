@@ -44,6 +44,17 @@ const Order = class {
         const result = await mysql.query(`SELECT oi.track_id FROM \`order\` AS o, order_item AS oi WHERE o.id = oi.order_id AND o.user_id = ? AND oi.album_id = ?`, [userId, albumId])
         return result
     }
+
+    async getDailySales(){
+        const result = await mysql.query(
+            `SELECT DATE(o.\`created\`) AS \`date\`, COUNT(DISTINCT o.id) AS \`orders\`, SUM(oi.\`price\`) AS sales, SUM(CASE WHEN oi.\`refundable\` = 0 THEN 1 ELSE 0 END) AS \`point\`
+                  FROM \`order\` AS o, \`order_item\` AS oi
+                  WHERE  o.\`id\` = oi.\`order_id\`
+                  GROUP BY  DATE(\`created\`)`)
+        return result
+
+    }
+
 }
 
 module.exports = Order;

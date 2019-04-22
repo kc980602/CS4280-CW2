@@ -1,14 +1,10 @@
 var express = require('express');
 var router = express.Router();
 const albumController = require('../controllers/album')
+const orderController = require('../controllers/order')
 const adminRoute = require('../middlewares/adminRoute')
 
-router.get('/', adminRoute, (req, res) => {
-    res.render('admin/index', {
-        title: 'Browse Albums | Mue',
-        isLogin: req.login,
-    })
-})
+router.get('/', orderController.sales)
 
 router.get('/product', adminRoute, albumController.browseAdminAlbums)
 

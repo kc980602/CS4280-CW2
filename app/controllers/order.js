@@ -9,10 +9,12 @@ const {
     toInstanceForceArray
 } = require('../../utils/serializer')
 const mysql = require('../../mysql/utils')
+const moment = require('moment');
 
 albumModel = new Album()
 trackModel = new Track()
 cartModel = new Cart()
+orderModel = new Order()
 
 module.exports = new class {
     async getCollection(user) {
@@ -25,7 +27,7 @@ module.exports = new class {
                                                         (o.created BETWEEN NOW() - INTERVAL 3 DAY AND NOW()) 
                                                 GROUP BY a.id 
                                                 ORDER BY a.title`, [user.id]);
-                                                console.log(result)
+        console.log(result)
         if (result) {
             let albumList = [];
 
@@ -128,5 +130,29 @@ module.exports = new class {
         } else {
             res.status(500).end();
         }
+    }
+
+    async sales(req, res, next) {
+        const data = await orderModel.getDailySales()
+
+        const dateLabel = []
+        const orders = []
+        const sales = []
+        const point = []
+
+        for (const item of data) {
+            dateLabel.push(moment(item.date).add(1, 'days').utc().format('YYYY-MM-DD'))
+            orders.push(item.orders)
+            sales.push(item.sales)
+            point.push(item.point)
+        }
+        console.log(dateLabel, orders, sales)
+        res.render('admin/index', {
+            title: 'Admin Page | Mue',
+            dateLabel: dateLabel,
+            orders: orders,
+            sales: sales,
+            point:point
+        })
     }
 }()
