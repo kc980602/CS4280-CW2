@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const albumController = require('../controllers/album')
+const orderController = require('../controllers/order')
 const adminRoute = require('../middlewares/adminRoute')
 
 router.get('/', adminRoute, (req, res) => {
@@ -36,19 +37,14 @@ router.get('/product/:album_id', adminRoute, (req, res) => {
     albumController.getAllAlbumInfo(req, res);
 })
 
-router.get('/product/album/:id', adminRoute, (req, res) => {
-    res.render('admin/index', {
-        title: 'Browse Albums | Mue',
-        isLogin: req.login,
+router.get('/refund', adminRoute, (req, res) => {
+    res.render('admin/refund', {
+        title: 'Refund Order | Mue'
     })
-
 })
 
-router.get('/product/refund', adminRoute, (req, res) => {
-    res.render('admin/refund', {
-        title: 'Browse Albums | Mue',
-        isLogin: req.login,
-    })
+router.get('/refund-request', adminRoute, (req, res) => {
+    orderController.getRequestedRefund(req, res);
 })
 
 module.exports = router;
