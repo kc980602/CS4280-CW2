@@ -355,7 +355,6 @@ module.exports = new class {
     async browseAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
         const albumList = await albumModel.getAlbums(page - 1, false)
-        if (albumList.length === 0) res.status(302).redirect('/browse/albums')
         res.render('albums', {
             title: 'Browse Album | Mue',
             albums: albumList,
@@ -368,7 +367,6 @@ module.exports = new class {
     async browseAdminAlbums(req, res, next) {
         const page = toNumber(req.query.page, 1)
         const albumList = await albumModel.getAlbums(page - 1, true)
-        if (albumList.length === 0) res.status(302).redirect('/admin/product')
         res.render('admin/product', {
             title: 'Browse Album | Mue',
             albums: albumList,

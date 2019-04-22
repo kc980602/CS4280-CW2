@@ -59,9 +59,9 @@
                                             <label for="${randId}" class="custom-file-label"></label>
                                             <div class="col-sm-2">
                                                 <input type="file" id="${randId}" class="custom-file-input track-file h-100"
-                                                    accept=".wav, .mp3, .ogg" required /> 
+                                                    accept=".wav, .mp3, .ogg" required />
                                             </div>
-                                        </div>   
+                                        </div>
                                     </td>
                                     <td class="text-right add-track-col">
                                         <button class="btn btn-dark btn-xs h-100 remove-track">Remove</button>
@@ -322,6 +322,7 @@
 
                             </tbody>
                         </table>
+                        <p class="text-danger text-right font-size-30 font-weight-bold">Press "Add" after enter a track information.</p>
                         <% include ../app/errMessage.ejs %>
                         <button type="submit" id="add-album-submit" class="btn oneMusic-btn btn-2 m-2">Update</button>
                     </form>
