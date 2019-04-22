@@ -16,17 +16,19 @@ cartModel = new Cart()
 
 module.exports = new class {
     async getCollection(user) {
-        const result = await mysql.query(`SELECT a.*, sum(t.price) AS total
+        const result = await mysql.query(`SELECT a.*, sum(t.price) AS total 
                                                 FROM \`album\` a, \`track\` t, \`order\` o, \`order_item\` oi 
                                                 WHERE o.user_id = ? AND
                                                         o.id = oi.order_id AND
                                                         a.id = oi.album_id AND
-                                                        t.id = oi.track_id 
+                                                        t.id = oi.track_id AND
+                                                        (o.created BETWEEN NOW() - INTERVAL 3 DAY AND NOW()) 
                                                 GROUP BY a.id 
                                                 ORDER BY a.title`, [user.id]);
+                                                console.log(result)
         if (result) {
             let albumList = [];
-            
+
             for (let row of result) {
                 let album = new Album(...Object.values(row));
 
@@ -40,7 +42,7 @@ module.exports = new class {
     }
     async getOrderList(user) {
         const result = await mysql.query(`SELECT *, a.id AS album_id, a.thumbnail, a.title AS album_title, o.id AS order_id, o.created AS order_created, oi.id AS oi_id, oi.refundable AS oi_refundable, oi.status AS oi_status
-                                                , t.id AS track_id, t.title AS track_title, t.artist AS track_artist
+                                                , t.id AS track_id, t.title AS track_title, t.artist AS track_artist, IF(o.created BETWEEN NOW() - INTERVAL 3 DAY AND NOW(), True, False) AS refund_ava
                                                 FROM \`album\` a, \`track\` t, \`order\` o, \`order_item\` oi 
                                                 WHERE o.user_id = ? AND
                                                         o.id = oi.order_id AND
@@ -55,6 +57,7 @@ module.exports = new class {
                     let order = new Order(row.order_id, null, null, row.order_created);
 
                     order.order_item = {};
+                    order.refund_ava = row.refund_ava;
                     orderList[row.order_id] = order;
                 }
                 if (!orderList[row.order_id].order_item[row.oi_id]) {
@@ -66,9 +69,10 @@ module.exports = new class {
                     orderList[row.order_id].order_item[row.oi_id] = orderItem;
                 }
                 if (!orderList[row.order_id].order_item[row.oi_id].albums[row.album_id]) {
-                    let album = new Album(row.album_id, row.thumbnail, row.album_title);
+                    let album = new Album(row.album_id, row.album_title);
 
                     album.tracks = {};
+                    album.thumbnail = row.thumbnail;
                     orderList[row.order_id].order_item[row.oi_id].albums[row.album_id] = album;
                 }
                 if (!orderList[row.order_id].order_item[row.oi_id].albums[row.album_id].tracks[row.track_id]) {

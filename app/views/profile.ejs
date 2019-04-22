@@ -150,11 +150,11 @@
                                                         
                                             `)
 
+                                            console.log(order.refund_ava, orderItem.refundable)
                                                 orderRow.find('.order_item-table').append(orderItemRow);
-                                                if (orderItem.refundable == 0 || orderItem.status != 0) {
+                                                if (orderItem.refundable == 0 || orderItem.status != 0 || order.refund_ava ==  0) {
                                                     let refundStatus;
 
-                                                    console.log(orderItem.status)
                                                     switch (orderItem.status) {
                                                         case 1:
                                                             refundStatus = $(
@@ -172,7 +172,6 @@
                                                                 );
                                                             break;
                                                     }
-                                                    console.log(refundStatus)
                                                     orderItemRow.find('.refund').append(refundStatus);
                                                 } else {
                                                     let refundButton = $(

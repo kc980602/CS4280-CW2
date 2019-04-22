@@ -83,7 +83,7 @@ module.exports = new class {
             }
 
             let thumbnailName = genUID() + path.extname(files.thumbnail.name);
-            let album = new Album(null, thumbnailName, fields.title, fields.artist, fields.label, fields.release_date);
+            let album = new Album(null, fields.title, fields.artist, fields.label, fields.release_date, thumbnailName);
             let result = await this.insertAlbum(album);
 
             if (result) {

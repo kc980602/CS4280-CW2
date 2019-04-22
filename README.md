@@ -31,7 +31,7 @@ MAK Kai Chung
 - Complete Album
 - Complete User
 
-CHEUNG Pak Lun (Freerider not doing even anything, not our team)
+CHEUNG Pak Lun (Freerider not doing even anything)
 - Complete Admin page
 
 #Route Design
