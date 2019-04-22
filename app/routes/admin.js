@@ -4,7 +4,7 @@ const albumController = require('../controllers/album')
 const orderController = require('../controllers/order')
 const adminRoute = require('../middlewares/adminRoute')
 
-router.get('/', orderController.sales)
+router.get('/', adminRoute, orderController.sales)
 
 router.get('/product', adminRoute, albumController.browseAdminAlbums)
 
