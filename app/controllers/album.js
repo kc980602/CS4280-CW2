@@ -199,10 +199,15 @@ module.exports = new class {
 
 
     async browseAlbum(req, res, next) {
-        const data = await albumModel.getAlbum(toNumber(req.params.id, 0))
+        const albumId = toNumber(req.params.id, 0)
+        const data = await albumModel.getAlbum(albumId)
         if (!data) res.status(404).redirect('/error')
         if (req.session.user) {
-
+            const purchased = await orderModel.checkPurchased(req.session.user.id, albumId)
+            for (const item of purchased) {
+                const target = data.tracks.find(t => t.id === item.track_id)
+                if (target) target.owned = true
+            }
         }
 
         res.render('album', {
@@ -227,6 +232,14 @@ module.exports = new class {
         if (!fullFilename)
             return res.status(400).end()
         return res.sendFile(path.resolve(fullStoragePath, fullFilename))
+    }
+
+    async getFullTrackFile(req, res) {
+        let fullFilename = req.params.full_filename;
+
+        if (!fullFilename)
+            return res.status(400).end()
+        res.download(path.resolve(fullStoragePath, fullFilename))
     }
 
     async getAlbumThumbnail(req, res, next) {
@@ -306,8 +319,8 @@ module.exports = new class {
         const userId = req.session.user.id
         const orderItems = await cartModel.getTrackItems(userId)
 
-        let point = toNumber(req.body.point,  0)
-        let tmpPoint = toNumber(req.body.point,  0)
+        let point = toNumber(req.body.point, 0)
+        let tmpPoint = toNumber(req.body.point, 0)
 
         const order = new Order()
         order.user_id = userId

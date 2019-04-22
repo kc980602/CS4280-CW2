@@ -14,6 +14,7 @@ const Track = class {
         this.file_preview = file_preview
         this.status = status
         this.created = created
+        this.owned = false
     }
 
     async getTrack(id) {

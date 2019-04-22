@@ -41,8 +41,8 @@ const Order = class {
     }
 
     async checkPurchased(userId, albumId) {
-        const result = await mysql.query(`SELECT GROUP_CONCAT(DISTINCT oi.track_id ORDER BY oi.track_id) as tracks FROM order_item AS oi WHERE oi.user_id = ? AND oi.album_id = ?`, [userId, albumId])
-        return result[0].tracks
+        const result = await mysql.query(`SELECT oi.track_id FROM \`order\` AS o, order_item AS oi WHERE o.id = oi.order_id AND o.user_id = ? AND oi.album_id = ?`, [userId, albumId])
+        return result
     }
 }
 

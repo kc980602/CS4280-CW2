@@ -55,22 +55,30 @@
                     <% for(item of album.tracks) { %>
                         <tr class=" align-items-center">
                             <td>
-                                <div class="album-4280">
-                                    <div class="align-items-center justify-content-between wow fadeInUp">
-                                        <audio preload="auto" controls>
-                                            <source src="<%= `/album/preview/${item.file_preview}` %>">
-                                        </audio>
+                                <% if (item.owned) { %>
+                                    <a href="<%= `/album/full/${item.file}` %>" download>
+                                        <i class="icon-download"></i>
+                                    </a>
+                                <% }else { %>
+                                    <div class="album-4280">
+                                        <div class="align-items-center justify-content-between wow fadeInUp">
+                                            <audio preload="auto" controls>
+                                                <source src="<%= `/album/preview/${item.file_preview}` %>">
+                                            </audio>
+                                        </div>
                                     </div>
-                                </div>
+                                <% } %>
                             </td>
                             <td><%= item.title %></td>
                             <td><%= item.artist %></td>
                             <td><%= moment.utc(item.length * 1000).format(item.length > 3600 ? 'hh:mm:ss' : 'mm:ss') %></td>
                             <td>$<%= item.price %></td>
                             <td class="text-right">
-                                <form action="<%= `/cart/${album.id}/${item.id}` %>" method="post">
-                                    <button type="submit" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 12px">Add</button>
-                                </form>
+                                <% if (!item.owned) { %>
+                                    <form action="<%= `/cart/${album.id}/${item.id}` %>" method="post">
+                                        <button type="submit" class="btn btn-dark btn-xs font-weight-normal" style="font-size: 12px">Add</button>
+                                    </form>
+                                <% } %>
                             </td>
                         </tr>
                     <% } %>

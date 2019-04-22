@@ -11,6 +11,8 @@ router.get('/album/thumbnail/:filename', albumController.getAlbumThumbnail)
 
 router.get('/album/full/:full_filename', albumController.getFullTrack)
 
+router.get('/album/full/:full_filename/download', albumController.getFullTrackFile)
+
 router.get('/album/preview/:preview_filename', albumController.getTrackPreview)
 
 router.get('/cart', protectedRoute, albumController.getCartItems)
