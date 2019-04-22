@@ -125,6 +125,7 @@
                                         </div>
                                     </div>
                                     `)
+                                    let index = 0;
                                     for (let key2 in order.order_item) {
                                         let orderItem = order.order_item[key2];
                                         for (let key3 in orderItem.albums) {
@@ -150,8 +151,10 @@
                                                         
                                             `)
 
-                                            console.log(order.refund_ava, orderItem.refundable)
                                                 orderRow.find('.order_item-table').append(orderItemRow);
+                                                if(order.refund_ava == 0 && index === 0){
+                                                    order.refund_ava = 1;
+                                                }
                                                 if (orderItem.refundable == 0 || orderItem.status != 0 || order.refund_ava ==  0) {
                                                     let refundStatus;
 
@@ -189,7 +192,7 @@
                                                     });
                                                     orderItemRow.find('.refund').append(refundButton);
                                                 }
-
+                                                index ++;
                                             }
                                         }
                                     }
