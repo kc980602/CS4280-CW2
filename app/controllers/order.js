@@ -61,7 +61,6 @@ module.exports = new class {
                 }
             }
 
-            console.log(orderList)
             return orderList;
         } else {
             return false;
@@ -75,23 +74,25 @@ module.exports = new class {
                                                         status = 0 AND 
                                                         refundable = 1`, [orderItem.id]);
         if (result) {
-            return order_item;
+            return orderItem;
         } else {
             return false;
         }
     }
 
     async updateOrder(req, res) {
+        console.log(req.body)
         if (req.body.refund) {
             let orderItemId = req.body.order_item_id;
             let orderItem = new Order(orderItemId);
 
             let result = await this.requestRefundOrder(orderItem);
 
+            console.log(result);
             if (result) {
-                res.status(200).end();
+                return res.status(200).end();
             } else {
-                res.status(500).end();
+                return res.status(500).end();
             }
         }
         return res.status(400).end();
@@ -99,7 +100,6 @@ module.exports = new class {
 
     async getPurchased(req, res) {
         let user = req.session.user;
-        console.log(this)
         let orderList = await this.getOrderList(user);
 
         if(orderList) {

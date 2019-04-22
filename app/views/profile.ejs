@@ -67,22 +67,9 @@
                     <% } else { %>
                     <script>
                         window.onload = () => {
-                            $('.order-item').find('.refund').on('click.refund', (event) => {
-                                let orderId = event.target.closest('.order-item').attr(
-                                    'data-id');
-
-                                axios.patch('/order', {
-                                    refund: true,
-                                    order_id: orderId
-                                }).then((res) => {
-                                    window.location.reload();
-                                });
-                            });
-
                             axios.get('/order/purchased').then((res) => {
                                 let result = res.data;
 
-                                console.log(result)
                                 for (let key1 in result) {
                                     let order = result[key1];
                                     let albumSum = 0;
@@ -157,16 +144,53 @@
                                                             <td>$${track.price}
                                                             </td>
                                                             <td class="text-right refund">
-                                                                <button href="" class="btn btn-dark btn-xs">Refund</button>
+                                                                
                                                             </td>
                                                         </tr>
                                                         
                                             `)
 
                                                 orderRow.find('.order_item-table').append(orderItemRow);
-                                                if (orderItem.refundable == 0 || false) {
-                                                    orderItemRow.find('.refund').hide();
+                                                if (orderItem.refundable == 0 || orderItem.status != 0) {
+                                                    let refundStatus;
+
+                                                    console.log(orderItem.status)
+                                                    switch (orderItem.status) {
+                                                        case 1:
+                                                            refundStatus = $(
+                                                                `<button class="btn btn-info btn-xs">Pending</button>`
+                                                            );
+                                                            break;
+                                                        case 2:
+                                                            refundStatus = $(
+                                                                `<button class="btn btn-success btn-xs">Success</button>`
+                                                                );
+                                                            break;
+                                                        case 3:
+                                                            refundStatus = $(
+                                                                `<button class="btn btn-danger btn-xs">Fail</button>`
+                                                                );
+                                                            break;
+                                                    }
+                                                    console.log(refundStatus)
+                                                    orderItemRow.find('.refund').append(refundStatus);
+                                                } else {
+                                                    let refundButton = $(
+                                                        `<button class="btn btn-dark btn-xs">Refund</button>`
+                                                    );
+
+                                                    refundButton.on('click.refund', (
+                                                        event) => {
+                                                        axios.patch('/order', {
+                                                            refund: true,
+                                                            order_item_id: orderItem.id
+                                                        }).then((res) => {
+                                                            window.location.reload();
+                                                        });
+                                                    });
+                                                    orderItemRow.find('.refund').append(refundButton);
                                                 }
+
                                             }
                                         }
                                     }
@@ -174,7 +198,6 @@
                                     $('.display-container').append(orderRow);
                                 }
 
-                                console.log(res);
                             });
                         }
                     </script>
