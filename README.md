@@ -4,55 +4,6 @@ Music Store Web Site
 App name - Mue
 
 
-#Submission 1 - Work Done 
-Cheung Pui Lam
-- Database design
-- All route design
-- All UI
-- Login connect business method
-- Setup project
-- Setup database
-
-MAK Kai Chung
-- Login business logic (draft)
-- Register business logic (draft)
-- Album business logic (draft)
-- User business login (draft)
-
-CHEUNG Pak Lun
-- NONE
-
-#Submission 2 - Work Done
-Cheung Pui Lam
-- All UI
-- Complete Cart and Checkout
-
-MAK Kai Chung
-- Complete Album
-- Complete User
-
-CHEUNG Pak Lun (Freerider not doing even anything)
-- Complete Admin page
-
-#Task Responsibility
-MAK Kai Chung
-    - Album management
-    - Browse Profile collection
-    - Browse Profile 
-    - Login Authentication
-    - Refund
-    - Music Preview & Spliting
-    - Profile
-
-Cheung Pui Lam
-    - Checkout
-    - Cart
-    - Checkout
-    - Create order
-	- Brose Album
-	- Admin Product List
-    - UI UX
-
 #Techniques used
  MVC architecture is used ✓
  static pages are used ✓
@@ -75,33 +26,33 @@ username: admin3
 password: 123
 
 #Route Design
--Index page - Cheung Pui Lam
+-Index page
 - /
 
 -Sign in / Sign out
-- /login - Cheung Pui Lam
-- /register - MAK Kai Chung
+- /login
+- /register
 
--My purchase - MAK Kai Chung
+-My purchase
 - /profile/collection
 - /profile/purchase
 
--Shopping cart - Cheung Pui Lam
+-Shopping cart
 - /cart
 
--Checkout - Cheung Pui Lam
+-Checkout
 - /checkout
 
 -Admin page
-- /admin -> statistics of sales - Cheung Pui Lam
-- /admin/product - Cheung Pui Lam
-- /admin/product/add - MAK Kai Chung
-- /admin/product/management/:album_id - MAK Kai Chung
-- /admin/refund - MAK Kai Chung
+- /admin -> statistics of sales
+- /admin/product
+- /admin/product/add 
+- /admin/product/management/:album_id
+- /admin/refund
 
 -Browse albums, query from album DB
-- /browse/albums - Cheung Pui Lam
-- /browse/albums/:id - MAK Kai Chung
+- /browse/albums
+- /browse/albums/:id
 
 #Database design
 
